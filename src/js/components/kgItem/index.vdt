@@ -1,0 +1,19 @@
+import {Tooltip} from 'kpc/components/tooltip';
+
+const {width, height, position} = self.get();
+
+<div class="kg-item" style={{ {width: `${width}px`, height: `${height}px`} }}
+    ev-mouseup={{ self._onMouseUp }}
+>
+    <Tooltip position={{ position }} 
+        theme="light" 
+        class="kg-item-preview" 
+        ev-beforeShow={{ self._position }}
+        showArrow={{ false }}
+    >
+        <div ref="container" class="kg-container"></div>
+        <b:content>
+            <div ref="preview"></div>
+        </b:content>
+    </Tooltip>
+</div>

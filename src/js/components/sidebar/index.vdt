@@ -1,0 +1,24 @@
+import {Collapse, CollapseItem} from 'kpc/components/collapse';
+import KgItem from '../kgItem';
+
+const {commonShapes} = self.get();
+
+<div class="kg-sidebar">
+    <Collapse noBorder arrow="left">
+        <CollapseItem title="通用">
+            <KgItem v-for={{ commonShapes }}
+                stylesheet={{ value.stylesheet }}
+                previewWidth={{ value.width || 120 }}
+                previewHeight={{ value.height || 60 }}
+                value={{ value.value }}
+                ev-dragend={{ self._onDragEnd }}
+            />
+        </CollapseItem>
+        <CollapseItem title="高级">
+
+        </CollapseItem>
+        <CollapseItem title="流程图">
+
+        </CollapseItem>
+    </Collapse>
+</div>

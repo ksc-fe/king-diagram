@@ -1,0 +1,14 @@
+import {Split} from 'kpc/components/split';
+import Sidebar from '../components/sidebar';
+import Diagram from '../components/diagram';
+
+const {sidebarWidth} = self.get();
+
+<Split firstSize={{ sidebarWidth }}>
+    <b:first>
+        <Sidebar ev-dragend={{ self._onDragEnd }} />
+    </b:first>
+    <b:last>
+        <Diagram ref="diagram" />
+    </b:last>
+</Split>
