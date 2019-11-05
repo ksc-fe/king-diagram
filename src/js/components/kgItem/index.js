@@ -1,11 +1,11 @@
 import Intact from 'intact';
 import template from './index.vdt';
-import mx, {createTempGraph} from '../../utils/mxgraph';
+import {createTempGraph} from '../../utils/graph';
+import mx from '../../mxgraph';
 import '../../shapes/process';
-// import {mxCell, mxGeometry, mxGraph} from '../../utils/Graph';
 import './index.styl';
 
-const {mxCell, mxGeometry, mxGraph} = mx;
+const {mxCell, mxGeometry} = mx;
 
 const graph = createTempGraph();
 

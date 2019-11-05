@@ -1,4 +1,4 @@
-import mx from '../utils/mxgraph';
+import mx from '../mxgraph';
 
 const {mxRectangleShape, mxUtils, mxConstants, mxRectangle, mxCellRenderer} = mx;
 
