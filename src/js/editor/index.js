@@ -1,5 +1,8 @@
 import Intact from 'intact';
 import template from './index.vdt';
+import {graph} from '../utils/graph';
+
+const {mxKeyHandler} = mx;
 
 export default class Editor extends Intact {
     @Intact.template()
@@ -11,7 +14,7 @@ export default class Editor extends Intact {
         }
     }
 
-    _onDragEnd(item) {
-        this.refs.diagram.insertCells(item.cells);
+    _mount() {
+        const keyHandler = new mxKeyHandler(graph);
     }
 }

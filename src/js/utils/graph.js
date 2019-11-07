@@ -1,7 +1,7 @@
 import mx from '../mxgraph';
 import defaultStyle from '../data/defaultStyle';
 
-const {mxGraph} = mx;
+const {mxGraph, mxRubberband} = mx;
 
 // temp graph for create thumbnails
 export function createTempGraph(container = document.createElement('div')) {
@@ -25,3 +25,29 @@ export function initStylesheet(graph) {
         graph.getStylesheet().putCellStyle(key, defaultStyle[key]);
     }
 }
+
+export function createGraph(container) {
+    const graph = new mxGraph(container); 
+
+    initStylesheet(graph);
+
+    graph.setConnectable(true);
+    graph.setDropEnabled(true);
+    graph.setPanning(true);
+    graph.setTooltips(true);
+    graph.setAllowLoops(true);
+    graph.allowAutoPanning = true;
+    graph.resetEdgesOnConnect = false;
+    graph.constrainChildren = false;
+    graph.constrainRelativeChildren = true;
+    
+    // Do not scroll after moving cells
+    graph.graphHandler.scrollOnMove = false;
+    graph.graphHandler.scaleGrid = true;
+
+    new mxRubberband(graph);
+
+    return graph;
+}
+
+export const graph = createGraph();

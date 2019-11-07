@@ -6,9 +6,9 @@ const {sidebarWidth} = self.get();
 
 <Split firstSize={{ sidebarWidth }}>
     <b:first>
-        <Sidebar ev-dragend={{ self._onDragEnd }} />
+        <Sidebar />
     </b:first>
     <b:last>
-        <Diagram ref="diagram" />
+        <Diagram />
     </b:last>
 </Split>
