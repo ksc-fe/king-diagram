@@ -1,0 +1,3 @@
+const {height} = self.get();
+
+<div class="kd-split-line" style={{ {height: height ? height + 'px' : undefined} }}></div>

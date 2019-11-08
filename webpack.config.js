@@ -61,7 +61,8 @@ module.exports = {
                         options: {
                             'include css': true,
                             'resolve url': true,
-                            'import': '~kpc/styles/themes/ksyun/index.styl',
+                            // 'import': '~kpc/styles/themes/ksyun/index.styl',
+                            'import': resolve('./src/css/theme/index.styl'),
                         }
                     }
                 ]
@@ -84,6 +85,7 @@ module.exports = {
     devServer: {
         contentBase: [resolve('./dist'), resolve('./src')],
         compress: true,
-        port: 9000
+        port: 9000,
+        hot: true,
     },
 };

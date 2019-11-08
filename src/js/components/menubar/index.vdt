@@ -1,0 +1,38 @@
+import Button from 'kpc/components/button';
+import {Dropdown, DropdownMenu, DropdownItem} from 'kpc/components/dropdown';
+import Icon from 'kpc/components/icon';
+
+<div class="kd-menubar">
+    <Dropdown trigger="click" position={{ {my: 'left top', at: 'left bottom+8'} }}>
+        <Button type="none" size="small">文件</Button>
+        <DropdownMenu class="kd-menubar-menu">
+            <DropdownItem>新建<span class="shortcut">Ctrl+N</span></DropdownItem>
+            <DropdownItem>打开</DropdownItem>
+            <Dropdown position={{ {my: 'left top', at: 'right-8 top'} }}>
+                <DropdownItem>
+                    最近打开
+                    <Icon class="ion-android-arrow-dropright" />
+                </DropdownItem>
+                <DropdownMenu class="kd-menubar-menu">
+                    <DropdownItem>产品线流程</DropdownItem>
+                    <DropdownItem>产品线流程</DropdownItem>
+                    <DropdownItem>产品线流程</DropdownItem>
+                    <DropdownItem>产品线流程</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
+            <DropdownItem>
+                保存
+                <Icon class="ion-android-arrow-dropright" />
+                <span class="shortcut">Ctrl+S</span>
+            </DropdownItem>
+            <DropdownItem>输出</DropdownItem>
+            <DropdownItem>打印</DropdownItem>
+            <DropdownItem>概览</DropdownItem>
+            <DropdownItem>图层</DropdownItem>
+            <DropdownItem>帮助</DropdownItem>
+        </DropdownMenu>
+    </Dropdown>
+    <Button type="none" size="small">形状</Button>
+    <Button type="none" size="small">格式</Button>
+    <Button type="none" size="small">帮助</Button>
+</div>

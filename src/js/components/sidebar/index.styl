@@ -1,6 +1,26 @@
-.kg-sidebar
-    .k-collapse-item
-        .k-title
-            padding 0 8px
-        .k-wrapper
-            margin-right -3px
+.kd-sidebar
+    display flex
+    flex-direction column
+    height 100%
+    > .title
+        height 40px
+        line-height 40px
+        border-bottom 1px solid $border-color
+        font-weight bold
+        padding 0 20px
+    > .search
+        padding 8px
+        border-bottom 1px solid $border-color
+    > .shapes
+        display flex
+        flex 1
+        .k-tabs
+            width 44px 
+            background #eee
+        .k-tab
+            padding 0
+        .k-active-bar:before
+            display none
+        .items
+            flex 1
+            padding 10px

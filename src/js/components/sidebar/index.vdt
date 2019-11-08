@@ -1,24 +1,34 @@
-import {Collapse, CollapseItem} from 'kpc/components/collapse';
-import KgItem from '../kgItem';
+// import {Collapse, CollapseItem} from 'kpc/components/collapse';
+import Shape from '../shape';
+import {Input} from 'kpc/components/input';
+import {Icon} from 'kpc/components/icon';
+import {Tabs, Tab} from 'kpc/components/tabs';
 
 const {commonShapes} = self.get();
 
-<div class="kg-sidebar">
-    <Collapse noBorder arrow="left">
-        <CollapseItem title="通用">
-            <KgItem v-for={{ commonShapes }}
+<div class="kd-sidebar">
+    <div class="title">形状</div>
+    <div class="search">
+        <Input placeholder="搜索图形" fluid>
+            <b:suffix>
+                <Icon class="ion-ios-search" />
+            </b:suffix>
+        </Input>
+    </div>
+    <div class="shapes">
+        <Tabs vertical type="no-border-card" v-model="shapeType" size="large">
+            <Tab value="basic">a</Tab>
+            <Tab value="b">b</Tab>
+            <Tab value="c">c</Tab>
+        </Tabs>
+        <div class="items">
+            <Shape v-for={{ commonShapes }}
                 stylesheet={{ value.stylesheet }}
                 previewWidth={{ value.width || 120 }}
                 previewHeight={{ value.height || 60 }}
                 value={{ value.value }}
                 ev-dragend={{ self._onDragEnd }}
             />
-        </CollapseItem>
-        <CollapseItem title="高级">
-
-        </CollapseItem>
-        <CollapseItem title="流程图">
-
-        </CollapseItem>
-    </Collapse>
+        </div>
+    </div>
 </div>

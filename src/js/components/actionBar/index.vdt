@@ -1,0 +1,35 @@
+import Button from 'kpc/components/button';
+import Icon from 'kpc/components/icon';
+import Line from '../line';
+import {Select, Option} from 'kpc/components/select';
+
+<div class="kd-action-bar">
+    <Button type="none" icon size="small">
+        <Icon class="ion-ios-plus-outline" size="20" />
+    </Button>
+    <Line height="16" />
+    <Button type="none" icon size="small">
+        <Icon class="ion-ios-minus-outline" size="20" />
+    </Button>
+    <Select inline v-model="scale">
+        <Option v-for={{ [25, 50, 75, 100, 125, 150, 200, 300, 400] }} value={{ value }}>
+            {{ value }}%
+        </Option>
+    </Select>
+    <Button type="none" icon size="small">
+        <Icon class="ion-ios-plus-outline" size="20" />
+    </Button>
+    <Button type="none" icon size="small">
+        <Icon class="ion-android-locate" size="20" />
+    </Button>
+    <Line height="16" />
+    <Button type="none" icon size="small">
+        <Icon class="ion-ios-undo" size="20" />
+    </Button>
+    <Button type="none" icon size="small">
+        <Icon class="ion-ios-redo" size="20" />
+    </Button>
+    <Button type="none" icon size="small">
+        <Icon class="ion-ios-trash-outline" size="20" />
+    </Button>
+</div>

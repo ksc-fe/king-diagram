@@ -10,13 +10,13 @@ const {mxCell, mxGeometry, mxUtils, mxEvent, mxRectangle} = mx;
 
 const tempGraph = createTempGraph();
 
-export default class KgItem extends Intact {
+export default class Shape extends Intact {
     @Intact.template()
     static template = template;
 
     defaults() {
         return {
-            width: 32,
+            width: 30,
             height: 30,
             stylesheet: "rounded=0;whiteSpace=wrap;html=1;",
             previewWidth: 120,
@@ -63,15 +63,23 @@ export default class KgItem extends Intact {
         this.set({position});
     }
 
-    _onMouseUp() {
-        graph.model.beginUpdate();
-        try {
-            graph.importCells(this.cells);
-        } catch (e) {
+    _onClick(e) {
+        const pt = graph.getFreeInsertPoint();
+        this.ds.drop(graph, e, null, pt.x, pt.y, true);
+    }
 
-        } finally {
-            graph.model.endUpdate();
-        }
+    _getFreeInsertPoint() {
+        var view = graph.view;
+        var bds = graph.getGraphBounds();
+        var pt = graph.getInsertPoint();
+        
+        // Places at same x-coord and 2 grid sizes below existing graph
+        var x = this.snap(Math.round(Math.max(pt.x, bds.x / view.scale - view.translate.x +
+            ((bds.width == 0) ? 2 * this.gridSize : 0))));
+        var y = this.snap(Math.round(Math.max(pt.y, (bds.y + bds.height) / view.scale - view.translate.y +
+            2 * this.gridSize)));
+        
+        return new mxPoint(x, y);
     }
 
     _createDragSource() {
@@ -81,46 +89,6 @@ export default class KgItem extends Intact {
         const preview = createPreviewShape(previewWidth, previewHeight);
         const dropHandler = createDropHandler(cells, true, null, bounds);
 
-        createDragSource(this.element, dropHandler, preview, cells, bounds);
-    }
-
-    _createDropHandler(cells, allowSplit, allowCellsIn) {
-        let elt = force ? null : (mxEvent.isTouchEvent(evt) || mxEvent.isPenEvent(evt)) ?
-            document.elementFromPoint(mxEvent.getClientX(evt), mxEvent.getClientY(evt)) :
-            mxEvent.getSource(evt);
-        while (elt && elt !== this.container) {
-            elt = elt.parentNode;
-        }
-    }
-
-    _createDragPreview() {
-        const {previewWidth, previewHeight} = this.get();
-
-        const el = document.createElement('div');
-        el.style.width = previewWidth + 'px';
-        el.style.height = previewHeight + 'px';
-
-        return el;
-    }
-
-    // Stops dragging if cancel is pressed
-    _resetOnCancel(dragSource) {
-		graph.addListener(mxEvent.ESCAPE, function(sender, evt) {
-			if (dragSource.isActive()) {
-				dragSource.reset();
-			}
-		});
-    }
-
-    // Overrides mouseDown to ignore popup triggers
-    _overrideMouseDown(dragSource) {
-        var mouseDown = dragSource.mouseDown;
-
-        dragSource.mouseDown = function(evt) {
-            if (!mxEvent.isPopupTrigger(evt) && !mxEvent.isMultiTouchEvent(evt)) {
-                graph.stopEditing();
-                mouseDown.apply(this, arguments);
-            }
-        };
+        this.ds = createDragSource(this.element, dropHandler, preview, cells, bounds);
     }
 }
