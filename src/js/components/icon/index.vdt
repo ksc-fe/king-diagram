@@ -1,0 +1,12 @@
+const {className, size, key, ref, ...rest} = self.get();
+
+const width = `${size}px`;
+
+<i class={{ {"kd-icon": true, [className]: className} }}
+    style={{ size ? {
+        backgroundSize: `${width} ${width}`,
+        width: width,
+        height: width
+    } : null }}
+    {{ ...rest }}
+></i>

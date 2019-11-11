@@ -1,0 +1,14 @@
+.kd-icon
+    display inline-block
+    width 16px
+    height 16px
+    background-size cover
+    background-repeat no-repeat
+    transition opacity $transition
+    for type in zoom-in zoom-out locate redo undo delete 'add' group de-group top bellow v-image h-image center middle top-align bottom-align middle-align left-align center-align right-align shrink
+        &.{type}
+            background-image url("../../../images/kd/" + type + '.png')
+
+.k-btn:hover
+    .kd-icon
+        opacity 0.5

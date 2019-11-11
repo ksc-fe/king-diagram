@@ -1,21 +1,18 @@
 import Intact from 'intact';
 import template from './index.vdt';
 import './index.styl';
-import commonShapes from '../../data/commonShapes';
 
-export default class Sidebar extends Intact {
+export default class Panel extends Intact {
     @Intact.template()
     static template = template;
 
     defaults() {
         return {
-            shapeCategory: 'basic',
+            show: true,
         };
     }
 
-    _init() {
-        this.set({
-            commonShapes,
-        });
+    _toggle() {
+        this.set('show', !this.get('show'));
     }
 }

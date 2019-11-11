@@ -1,13 +1,20 @@
-// import {Collapse, CollapseItem} from 'kpc/components/collapse';
 import Shape from '../shape';
 import {Input} from 'kpc/components/input';
 import {Icon} from 'kpc/components/icon';
 import {Tabs, Tab} from 'kpc/components/tabs';
+import KdIcon from '../icon';
+import Button from 'kpc/components/button';
+import Tooltip from 'kpc/components/tooltip';
 
 const {commonShapes} = self.get();
 
 <div class="kd-sidebar">
-    <div class="title">形状</div>
+    <div class="title">
+        形状
+        <Button type="none" size="small">
+            <KdIcon class="shrink" size="12" />
+        </Button>
+    </div>
     <div class="search">
         <Input placeholder="搜索图形" fluid>
             <b:suffix>
@@ -16,10 +23,22 @@ const {commonShapes} = self.get();
         </Input>
     </div>
     <div class="shapes">
-        <Tabs vertical type="no-border-card" v-model="shapeType" size="large">
-            <Tab value="basic">a</Tab>
-            <Tab value="b">b</Tab>
-            <Tab value="c">c</Tab>
+        <Tabs vertical type="no-border-card" v-model="shapeCategory" size="large">
+            <Tab value="custom">
+                <Tooltip content="自定义图形" position="right">
+                    <KdIcon class="custom" size="24" />
+                </Tooltip>
+            </Tab>
+            <Tab value="basic">
+                <Tooltip content="基础图形" position="right">
+                    <KdIcon class="basic" size="24" />
+                </Tooltip>
+            </Tab>
+            <Tab value="king">
+                <Tooltip content="网络拓扑图" position="right">
+                    <KdIcon class="king" size="24" />
+                </Tooltip>
+            </Tab>
         </Tabs>
         <div class="items">
             <Shape v-for={{ commonShapes }}

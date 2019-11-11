@@ -1,35 +1,125 @@
 import Button from 'kpc/components/button';
 import Icon from 'kpc/components/icon';
+import KdIcon from '../icon';
 import Line from '../line';
 import {Select, Option} from 'kpc/components/select';
+import Tooltip from 'kpc/components/tooltip';
 
 <div class="kd-action-bar">
-    <Button type="none" icon size="small">
-        <Icon class="ion-ios-plus-outline" size="20" />
-    </Button>
+    <Tooltip content="添加">
+        <Button type="none" icon size="small">
+            <KdIcon class="add" />
+        </Button>
+    </Tooltip>
     <Line height="16" />
-    <Button type="none" icon size="small">
-        <Icon class="ion-ios-minus-outline" size="20" />
-    </Button>
+    <Tooltip content="缩小">
+        <Button type="none" icon size="small">
+            <KdIcon class="zoom-in" />
+        </Button>
+    </Tooltip>
     <Select inline v-model="scale">
         <Option v-for={{ [25, 50, 75, 100, 125, 150, 200, 300, 400] }} value={{ value }}>
             {{ value }}%
         </Option>
     </Select>
-    <Button type="none" icon size="small">
-        <Icon class="ion-ios-plus-outline" size="20" />
-    </Button>
-    <Button type="none" icon size="small">
-        <Icon class="ion-android-locate" size="20" />
-    </Button>
+    <Tooltip content="放大">
+        <Button type="none" icon size="small">
+            <KdIcon class="zoom-out" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="定位">
+        <Button type="none" icon size="small">
+            <KdIcon class="locate" />
+        </Button>
+    </Tooltip>
     <Line height="16" />
-    <Button type="none" icon size="small">
-        <Icon class="ion-ios-undo" size="20" />
-    </Button>
-    <Button type="none" icon size="small">
-        <Icon class="ion-ios-redo" size="20" />
-    </Button>
-    <Button type="none" icon size="small">
-        <Icon class="ion-ios-trash-outline" size="20" />
-    </Button>
+    <Tooltip content="撤销">
+        <Button type="none" icon size="small">
+            <KdIcon class="undo" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="重做">
+        <Button type="none" icon size="small">
+            <KdIcon class="redo" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="删除">
+        <Button type="none" icon size="small">
+            <KdIcon class="delete" />
+        </Button>
+    </Tooltip>
+    <Line height="16" />
+    <Tooltip content="分组">
+        <Button type="none" icon size="small">
+            <KdIcon class="group" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="解除分组">
+        <Button type="none" icon size="small">
+            <KdIcon class="de-group" />
+        </Button>
+    </Tooltip>
+    <Line height="16" />
+    <Tooltip content="置顶">
+        <Button type="none" icon size="small">
+            <KdIcon class="top" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="下移一层">
+        <Button type="none" icon size="small">
+            <KdIcon class="bellow" />
+        </Button>
+    </Tooltip>
+    <Line height="16" />
+    <Tooltip content="垂直镜像">
+        <Button type="none" icon size="small">
+            <KdIcon class="v-image" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="水平镜像">
+        <Button type="none" icon size="small">
+            <KdIcon class="h-image" />
+        </Button>
+    </Tooltip>
+    <Line height="16" />
+    <Tooltip content="水平居中">
+        <Button type="none" icon size="small">
+            <KdIcon class="center" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="垂直居中">
+        <Button type="none" icon size="small">
+            <KdIcon class="middle" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="左对齐">
+        <Button type="none" icon size="small">
+            <KdIcon class="left-align" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="水平居中对齐">
+        <Button type="none" icon size="small">
+            <KdIcon class="center-align" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="右对齐">
+        <Button type="none" icon size="small">
+            <KdIcon class="right-align" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="顶部对齐">
+        <Button type="none" icon size="small">
+            <KdIcon class="top-align" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="垂直居中对齐">
+        <Button type="none" icon size="small">
+            <KdIcon class="middle-align" />
+        </Button>
+    </Tooltip>
+    <Tooltip content="底端对齐">
+        <Button type="none" icon size="small">
+            <KdIcon class="bottom-align" />
+        </Button>
+    </Tooltip>
 </div>

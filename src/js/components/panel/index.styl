@@ -1,0 +1,38 @@
+.kd-panel
+    position relative 
+    border-left 1px solid $border-color
+    .collapse-wrapper
+        width 240px
+        transition width $transition, opacity $transition
+        overflow hidden
+    .k-collapse
+        width 240px
+    .k-collapse-item
+        .k-title
+            padding 0 10px
+            overflow hidden
+    .expand-shrink
+        width 16px
+        height 60px
+        background #fbfbfb
+        border 1px solid #dadce0
+        border-right none
+        border-radius @width 0 0 @width 
+        position absolute
+        top 50%
+        margin-top -(@height / 2)
+        left -(@width + 1px)
+        cursor pointer
+        display flex
+        justify-content center
+        align-items center
+        .k-icon
+            margin-left 3px
+            transition transform $transition
+    &.hide
+        .collapse-wrapper
+            width 0
+            opacity 0
+        .expand-shrink
+            .k-icon
+                transform rotate(180deg)

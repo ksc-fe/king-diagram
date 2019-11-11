@@ -1,0 +1,41 @@
+import {Collapse, CollapseItem} from 'kpc/components/collapse';
+import Checkbox from 'kpc/components/checkbox';
+import {Select, Option} from 'kpc/components/select';
+import Radio from 'kpc/components/radio';
+import Icon from 'kpc/components/icon';
+
+const {show} = self.get();
+
+<div class={{ {'kd-panel': true, 'hide': !show} }}>
+    <div class="collapse-wrapper">
+        <Collapse noBorder>
+            <CollapseItem title="样式">
+                <div class="item">
+                    <Checkbox>填充</Checkbox>
+                </div>
+                <div class="item">
+                    <Checkbox>线</Checkbox>
+                </div>
+                <div class="item">
+                    <Checkbox>按比例调节大小</Checkbox>
+                </div>
+            </CollapseItem>
+            <CollapseItem title="文本">
+                <Select fluid size="small">
+                    <Option value="Microsoft Yahei">Microsoft Yahei</Option>
+                    <Option value="Monospace">Monospace</Option>
+                </Select>
+            </CollapseItem>
+            <CollapseItem title="布局">
+                <Radio v-model="layout" trueValue="circle">圆形</Radio><br />
+                <Radio v-model="layout" trueValue="tree">树形</Radio><br />
+                <Radio v-model="layout" trueValue="ray">放射</Radio><br />
+                <Radio v-model="layout" trueValue="vertical">垂直</Radio><br />
+                <Radio v-model="layout" trueValue="horizontal">水平</Radio><br />
+            </CollapseItem>
+        </Collapse>
+    </div>
+    <div class="expand-shrink" ev-click={{ self._toggle }}>
+        <Icon class="ion-android-arrow-dropright" />
+    </div>
+</div>

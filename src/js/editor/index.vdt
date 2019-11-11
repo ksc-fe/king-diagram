@@ -4,6 +4,7 @@ import Diagram from '../components/diagram';
 import MenuBar from '../components/menubar';
 import TopBar from '../components/topBar';
 import ActionBar from '../components/actionBar';
+import Panel from '../components/panel';
 
 const {sidebarWidth} = self.get();
 
@@ -17,6 +18,7 @@ const {sidebarWidth} = self.get();
         </b:first>
         <b:last>
             <Diagram />
+            <Panel />
         </b:last>
     </Split>
 </div>
