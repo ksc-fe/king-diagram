@@ -7,8 +7,9 @@ import Tooltip from 'kpc/components/tooltip';
 
 <div class="kd-action-bar">
     <Tooltip content="添加">
-        <Button type="none" icon size="small">
+        <Button type="none" size="small" class="add-btn">
             <KdIcon class="add" />
+            <Icon class="ion-android-arrow-dropdown" />
         </Button>
     </Tooltip>
     <Line height="16" />
@@ -17,7 +18,7 @@ import Tooltip from 'kpc/components/tooltip';
             <KdIcon class="zoom-in" />
         </Button>
     </Tooltip>
-    <Select inline v-model="scale">
+    <Select inline v-model="scale" position={{ {my: 'center top+8', at: 'center bottom'} }}>
         <Option v-for={{ [25, 50, 75, 100, 125, 150, 200, 300, 400] }} value={{ value }}>
             {{ value }}%
         </Option>

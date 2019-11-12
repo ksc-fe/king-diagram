@@ -11,7 +11,7 @@ const {commonShapes} = self.get();
 <div class="kd-sidebar">
     <div class="title">
         形状
-        <Button type="none" size="small">
+        <Button type="none" size="small" icon>
             <KdIcon class="shrink" size="12" />
         </Button>
     </div>

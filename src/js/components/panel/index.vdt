@@ -3,14 +3,21 @@ import Checkbox from 'kpc/components/checkbox';
 import {Select, Option} from 'kpc/components/select';
 import Radio from 'kpc/components/radio';
 import Icon from 'kpc/components/icon';
+import Button from 'kpc/components/button';
+import KdIcon from '../icon';
+import Spinner from 'kpc/components/spinner';
 
-const {show} = self.get();
+const {show, state} = self.get();
+const textAlign = self.get('state.style.align');
 
 <div class={{ {'kd-panel': true, 'hide': !show} }}>
     <div class="collapse-wrapper">
-        <Collapse noBorder>
-            <CollapseItem title="样式">
-                <div class="item">
+        <Collapse noBorder v-model="expandedKeys">
+            <CollapseItem title="样式" disabled={{ !state }} value="style">
+                <div class="item" v-if={{ 
+                    !self.get('state.containsLabel') &&
+                    (!self.get('state.containsImage') || self.get('state.style.shape') === 'image') 
+                }}>
                     <Checkbox>填充</Checkbox>
                 </div>
                 <div class="item">
@@ -20,13 +27,52 @@ const {show} = self.get();
                     <Checkbox>按比例调节大小</Checkbox>
                 </div>
             </CollapseItem>
-            <CollapseItem title="文本">
-                <Select fluid size="small">
+            <CollapseItem title="文本" disabled={{ !state }} value="text">
+                <Select fluid size="small" value={{ self.get('state.style.fontFamily') }}>
+                    <Option value="Helvetica">Helvetica</Option>
                     <Option value="Microsoft Yahei">Microsoft Yahei</Option>
                     <Option value="Monospace">Monospace</Option>
                 </Select>
+                <div class="row">
+                    <Button type="none" icon>
+                        <KdIcon class="bold" size="30" />
+                    </Button>
+                    <Button type="none" icon>
+                        <KdIcon class="italic" size="30" />
+                    </Button>
+                    <Button type="none" icon>
+                        <KdIcon class="underline" size="14" />
+                    </Button>
+                    <div class="font-size">
+                        大小
+                        <Spinner vertical size="small" value={{ self.get('state.style.fontSize') }} min={{ 1 }} />
+                    </div>
+                </div>
+                <div class="row">
+                    <Button type="none" icon class={{ {active: textAlign === 'left'} }}>
+                        <KdIcon class="text-left" size="30" />
+                    </Button>
+                    <Button type="none" icon class={{ {active: textAlign === 'center'} }}>
+                        <KdIcon class="text-center" size="30" />
+                    </Button>
+                    <Button type="none" icon class={{ {active: textAlign === 'right'} }}>
+                        <KdIcon class="text-right" size="30" />
+                    </Button>
+                    <Button type="none" icon class={{ {active: textAlign === 'right'} }}>
+                        <KdIcon class="text-top" size="30" />
+                    </Button>
+                    <Button type="none" icon class={{ {active: textAlign === 'right'} }}>
+                        <KdIcon class="text-middle" size="16" />
+                    </Button>
+                    <Button type="none" icon class={{ {active: textAlign === 'right'} }}>
+                        <KdIcon class="text-bottom" size="30" />
+                    </Button>
+                </div>
+                <div class="row">
+                    <div class="label">字体颜色</div>
+                </div>
             </CollapseItem>
-            <CollapseItem title="布局">
+            <CollapseItem title="布局" disabled={{ !state }} value="layout">
                 <Radio v-model="layout" trueValue="circle">圆形</Radio><br />
                 <Radio v-model="layout" trueValue="tree">树形</Radio><br />
                 <Radio v-model="layout" trueValue="ray">放射</Radio><br />
