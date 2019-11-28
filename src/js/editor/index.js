@@ -2,6 +2,7 @@ import Intact from 'intact';
 import template from './index.vdt';
 import {graph} from '../utils/graph';
 import './index.styl';
+import mx from '../mxgraph';
 
 const {mxKeyHandler} = mx;
 

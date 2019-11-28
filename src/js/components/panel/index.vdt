@@ -6,6 +6,7 @@ import Icon from 'kpc/components/icon';
 import Button from 'kpc/components/button';
 import KdIcon from '../icon';
 import Spinner from 'kpc/components/spinner';
+import Colorpicker from 'kpc/components/colorpicker';
 
 const {show, state} = self.get();
 const textAlign = self.get('state.style.align');
@@ -19,9 +20,14 @@ const textAlign = self.get('state.style.align');
                     (!self.get('state.containsImage') || self.get('state.style.shape') === 'image') 
                 }}>
                     <Checkbox>填充</Checkbox>
+                    <Colorpicker value="yellow" size="small" />
                 </div>
                 <div class="item">
                     <Checkbox>线</Checkbox>
+                    <Colorpicker value="red" size="small" />
+                </div>
+                <div class="item">
+                    <Checkbox>圆角</Checkbox>
                 </div>
                 <div class="item">
                     <Checkbox>按比例调节大小</Checkbox>

@@ -4,13 +4,14 @@
   "description": "A fully client side Javascript diagramming library based on mxgraph.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "intact": "^2.5.7",
-    "kpc": "^1.2.0",
+    "kpc": "^1.2.1",
     "mxgraph": "^4.0.5",
     "universal-router": "^8.3.0"
   },

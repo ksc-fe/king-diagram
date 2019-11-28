@@ -1,7 +1,7 @@
-// import mx from 'mxgraph';
+import mx from 'mxgraph';
 
-// const doll = mx();
-const doll = window.mx;
+const doll = mx();
+// const doll = window.mx;
 const {mxImage} = doll;
 
 export default doll;
