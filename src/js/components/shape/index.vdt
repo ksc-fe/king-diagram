@@ -1,6 +1,6 @@
 import {Tooltip} from 'kpc/components/tooltip';
 
-const {width, height, position} = self.get();
+const {width, height, position, basic} = self.get();
 
 <div class="kd-shape" style={{ {width: `${width}px`, height: `${height}px`} }}
     ev-click={{ self._onClick }}
@@ -10,6 +10,7 @@ const {width, height, position} = self.get();
         class="kd-shape-preview" 
         ev-beforeShow={{ self._position }}
         showArrow={{ false }}
+        v-if={{ !basic }}
     >
         <div ref="container" class="kd-container"></div>
         <b:content>

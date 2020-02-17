@@ -10,6 +10,7 @@ import Colorpicker from 'kpc/components/colorpicker';
 
 const {show, state} = self.get();
 const textAlign = self.get('state.style.align');
+const strokeColor = self._getStrokeColor();
 
 <div class={{ {'kd-panel': true, 'hide': !show} }}>
     <div class="collapse-wrapper">
@@ -19,12 +20,28 @@ const textAlign = self.get('state.style.align');
                     !self.get('state.containsLabel') &&
                     (!self.get('state.containsImage') || self.get('state.style.shape') === 'image') 
                 }}>
-                    <Checkbox>填充</Checkbox>
-                    <Colorpicker value="yellow" size="small" />
+                    <Checkbox value={{ self.get('state.fill') }}>填充</Checkbox>
+                    <Colorpicker value={{ self.get('state.style.fillColor') || '#fff' }} size="small" />
                 </div>
                 <div class="item">
-                    <Checkbox>线</Checkbox>
-                    <Colorpicker value="red" size="small" />
+                    <div class="c-clearfix">
+                        <Checkbox value={{ !!strokeColor }}>线</Checkbox>
+                        <Colorpicker value={{ strokeColor || '#000' }} size="small" />
+                    </div>
+                    <div class="c-clearfix extra-item">
+                        <Select size="small" width="120" value={{ self._getStrokeStyle() }}>
+                            <Option v-for={{ ['solid', 'dashed', 'dotted'] }}
+                                value={{ value }}
+                                label={{ value }}
+                            >
+                                <div class="line-style" style={{ {borderBottom: `1px ${value} #000`} }}></div>
+                            </Option>
+                        </Select>
+                        <Spinner vertical size="small" 
+                            value={{ self.get('state.style.strokeWidth', 1) }}
+                            suffix="pt"
+                        />
+                    </div>
                 </div>
                 <div class="item">
                     <Checkbox>圆角</Checkbox>

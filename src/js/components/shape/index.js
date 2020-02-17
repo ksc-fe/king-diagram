@@ -22,23 +22,25 @@ export default class Shape extends Intact {
             previewWidth: 120,
             previewHeight: 60,
             value: '',
+            basic: false,
         };
     }
 
     _create() {
         const graph = tempGraph;
-        const {width, height, stylesheet, previewWidth, previewHeight, value} = this.get();
+        const {width, height, stylesheet, previewWidth, previewHeight, value, basic} = this.get();
         const cells = this.cells = [new mxCell(value, new mxGeometry(0, 0, previewWidth, previewHeight), stylesheet)];
         cells[0].vertex = true;
         graph.view.scaleAndTranslate(1, 0, 0);
         graph.addCells(cells);
 
         const oNode = graph.view.getCanvas().ownerSVGElement;
-        const previewNode = oNode.cloneNode(true);
-        previewNode.style.width = `${previewWidth}px`;
-        previewNode.style.height = `${previewHeight}px`;
-        this.refs.preview.appendChild(previewNode);
-
+        if (!basic) {
+            const previewNode = oNode.cloneNode(true);
+            previewNode.style.width = `${previewWidth}px`;
+            previewNode.style.height = `${previewHeight}px`;
+            this.refs.preview.appendChild(previewNode);
+        }
         const bounds = graph.getGraphBounds();
         const s = Math.floor(Math.min((width - 2) / bounds.width, (height - 2) / bounds.height) * 100) / 100;
         graph.view.scaleAndTranslate(
@@ -51,7 +53,9 @@ export default class Shape extends Intact {
 
         graph.getModel().clear();
 
-        this._createDragSource();
+        if (!basic) {
+            this._createDragSource();
+        }
     }
 
     _position() {
@@ -64,6 +68,7 @@ export default class Shape extends Intact {
     }
 
     _onClick(e) {
+        if (this.get('basic')) return;
         const pt = graph.getFreeInsertPoint();
         this.ds.drop(graph, e, null, pt.x, pt.y, true);
     }
