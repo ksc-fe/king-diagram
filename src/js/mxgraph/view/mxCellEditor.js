@@ -94,3 +94,12 @@ mxCellEditor.prototype.getCurrentValue = function(state) {
 		return result;
 	}
 };
+
+/**
+ * HTML in-place editor
+ */
+mxCellEditor.prototype.isContentEditing = function() {
+    var state = this.graph.view.getState(this.editingCell);
+    
+    return state != null && state.style['html'] == 1;
+};

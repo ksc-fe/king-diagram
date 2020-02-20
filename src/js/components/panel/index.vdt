@@ -7,95 +7,123 @@ import Button from 'kpc/components/button';
 import KdIcon from '../icon';
 import Spinner from 'kpc/components/spinner';
 import Colorpicker from 'kpc/components/colorpicker';
+import mx from '../../mxgraph';
 
-const {show, state} = self.get();
+const {mxConstants} = mx;
+const {show, state, isEditing} = self.get();
 const textAlign = self.get('state.style.align');
+const verticalAlign = self.get('state.style.verticalAlign');
 const strokeColor = self._getStrokeColor();
+const fontStyle = self.get('state.style.fontStyle', 0);
+const fillColor = self.get('state.style.fillColor');
 
 <div class={{ {'kd-panel': true, 'hide': !show} }}>
     <div class="collapse-wrapper">
         <Collapse noBorder v-model="expandedKeys">
-            <CollapseItem title="样式" disabled={{ !state }} value="style">
+            <CollapseItem title="样式" disabled={{ !state || isEditing }} value="style">
                 <div class="item" v-if={{ 
                     !self.get('state.containsLabel') &&
                     (!self.get('state.containsImage') || self.get('state.style.shape') === 'image') 
                 }}>
-                    <Checkbox value={{ self.get('state.fill') }}>填充</Checkbox>
-                    <Colorpicker value={{ self.get('state.style.fillColor') || '#fff' }} size="small" />
+                    <Checkbox value={{ !!fillColor && fillColor !== 'none' }}
+                        ev-$change:value={{ self._toggleFill }}
+                    >填充</Checkbox>
+                    <Colorpicker value={{ fillColor || '#ffffff' }} size="small" 
+                        ev-$change:value={{ self._setFillColor }}
+                        ref="fillColor"
+                        disabled={{ !fillColor || fillColor === 'none' }}
+                    />
                 </div>
                 <div class="item">
                     <div class="c-clearfix">
                         <Checkbox value={{ !!strokeColor }}>线</Checkbox>
-                        <Colorpicker value={{ strokeColor || '#000' }} size="small" />
+                        <Colorpicker value={{ strokeColor || '#000000' }} size="small" 
+                            ev-$change:value={{ self._setStyle.bind(self, 'strokeColor') }}
+                        />
                     </div>
                     <div class="c-clearfix extra-item">
-                        <Select size="small" width="120" value={{ self._getStrokeStyle() }}>
+                        <Select size="small" width="120" value={{ self._getStrokeStyle() }}
+                            ev-$change:value={{ self._setStrokeStyle }}
+                        >
                             <Option v-for={{ ['solid', 'dashed', 'dotted'] }}
                                 value={{ value }}
                                 label={{ value }}
                             >
                                 <div class="line-style" style={{ {borderBottom: `1px ${value} #000`} }}></div>
                             </Option>
+                            <b:value params="value">
+                                <div style={{ {borderBottom: `1px ${value} #666`} }} class="line"></div>
+                            </b:value>
                         </Select>
                         <Spinner vertical size="small" 
                             value={{ self.get('state.style.strokeWidth', 1) }}
+                            min={{ 1 }}
                             suffix="pt"
+                            ev-$change:value={{ self._setStyle.bind(self, 'strokeWidth') }}
                         />
                     </div>
                 </div>
                 <div class="item">
-                    <Checkbox>圆角</Checkbox>
-                </div>
-                <div class="item">
-                    <Checkbox>按比例调节大小</Checkbox>
+                    <Checkbox value={{ self.get('state.style.rounded') === 1 }}
+                        ev-$change:value={{ self._setRounded }}
+                    >圆角</Checkbox>
                 </div>
             </CollapseItem>
             <CollapseItem title="文本" disabled={{ !state }} value="text">
-                <Select fluid size="small" value={{ self.get('state.style.fontFamily') }}>
+                <Select fluid size="small" value={{ self.get('state.style.fontFamily') }}
+                    ev-$change:value={{ self._setFontFamily }}
+                    ev-mousedown={{ self._preventDefault }}
+                    ref="fontFamily"
+                >
                     <Option value="Helvetica">Helvetica</Option>
                     <Option value="Microsoft Yahei">Microsoft Yahei</Option>
                     <Option value="Monospace">Monospace</Option>
                 </Select>
                 <div class="row">
-                    <Button type="none" icon>
-                        <KdIcon class="bold" size="30" />
-                    </Button>
-                    <Button type="none" icon>
-                        <KdIcon class="italic" size="30" />
-                    </Button>
-                    <Button type="none" icon>
-                        <KdIcon class="underline" size="14" />
+                    <Button type="none" icon
+                        v-for={{ ['BOLD', 'ITALIC', 'UNDERLINE'] }}
+                        class={{ {active: (fontStyle & mxConstants[`FONT_${value}`]) === mxConstants[`FONT_${value}`]} }}
+                        ev-click={{ self._toggleFontStyle.bind(self, value) }}
+                    >
+                        <KdIcon class={{ value.toLowerCase() }} size={{ value === 'UNDERLINE' ? 14 : 30 }} />
                     </Button>
                     <div class="font-size">
                         大小
-                        <Spinner vertical size="small" value={{ self.get('state.style.fontSize') }} min={{ 1 }} />
+                        <Spinner vertical size="small"
+                            value={{ self.get('state.style.fontSize', 12) }}
+                            min={{ 1 }}
+                            suffix="pt"
+                            ev-change={{ self._setFontSize }}
+                            ref="fontSize"
+                        />
                     </div>
                 </div>
                 <div class="row">
-                    <Button type="none" icon class={{ {active: textAlign === 'left'} }}>
-                        <KdIcon class="text-left" size="30" />
+                    <Button type="none" icon 
+                        v-for={{ ['left', 'center', 'right'] }}
+                        class={{ {active: textAlign === value} }}
+                        ev-click={{ self._setAlign.bind(self, 'align', value) }}
+                    >
+                        <KdIcon class={{ `text-${value}` }} size="30" />
                     </Button>
-                    <Button type="none" icon class={{ {active: textAlign === 'center'} }}>
-                        <KdIcon class="text-center" size="30" />
-                    </Button>
-                    <Button type="none" icon class={{ {active: textAlign === 'right'} }}>
-                        <KdIcon class="text-right" size="30" />
-                    </Button>
-                    <Button type="none" icon class={{ {active: textAlign === 'right'} }}>
-                        <KdIcon class="text-top" size="30" />
-                    </Button>
-                    <Button type="none" icon class={{ {active: textAlign === 'right'} }}>
-                        <KdIcon class="text-middle" size="16" />
-                    </Button>
-                    <Button type="none" icon class={{ {active: textAlign === 'right'} }}>
-                        <KdIcon class="text-bottom" size="30" />
+                    <Button type="none" icon 
+                        v-for={{ ['top', 'middle', 'bottom'] }}
+                        class={{ {active: verticalAlign === value} }}
+                        ev-click={{ self._setAlign.bind(self, 'verticalAlign', value) }}
+                    >
+                        <KdIcon class={{ `text-${value}` }} size={{ value === 'middle' ? 16 : 30 }} />
                     </Button>
                 </div>
-                <div class="row">
+                <div class="row whole">
                     <div class="label">字体颜色</div>
+                    <Colorpicker value={{ self.get('state.style.fontColor', '#000000') }} size="small" 
+                        ev-$change:value={{ self._setFontColor }}
+                        ev-mousedown={{ self._preventDefault }}
+                        ref="fontColor"
+                    />
                 </div>
             </CollapseItem>
-            <CollapseItem title="布局" disabled={{ !state }} value="layout">
+            <CollapseItem title="布局" disabled={{ !state || isEditing }} value="layout">
                 <Radio v-model="layout" trueValue="circle">圆形</Radio><br />
                 <Radio v-model="layout" trueValue="tree">树形</Radio><br />
                 <Radio v-model="layout" trueValue="ray">放射</Radio><br />

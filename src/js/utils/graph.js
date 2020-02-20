@@ -34,7 +34,7 @@ export function createGraph(container) {
     graph.setConnectable(true);
     graph.setDropEnabled(true);
     graph.setPanning(true);
-    graph.setTooltips(true);
+    graph.setTooltips(false);
     graph.setAllowLoops(true);
     graph.allowAutoPanning = true;
     graph.resetEdgesOnConnect = false;

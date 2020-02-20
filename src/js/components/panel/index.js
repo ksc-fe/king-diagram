@@ -5,7 +5,31 @@ import {graph} from '../../utils/graph';
 import mx from '../../mxgraph';
 import getState from './getState';
 
-const {mxEvent, mxConstants} = mx;
+const {mxEvent, mxConstants, mxUtils} = mx;
+
+function saveSelection() {
+    if (window.getSelection) {
+        var sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+            return sel.getRangeAt(0);
+        }
+    } else if (document.selection && document.selection.createRange) {
+        return document.selection.createRange();
+    }
+    return null;
+}
+
+function restoreSelection(range) {
+    if (range) {
+        if (window.getSelection) {
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        } else if (document.selection && range.select) {
+            range.select();
+        }
+    }
+}
 
 export default class Panel extends Intact {
     @Intact.template()
@@ -17,11 +41,31 @@ export default class Panel extends Intact {
             state: null,
             // expandedKeys: [],
             expandedKeys: ['style', 'text', 'layout'],
+            isEditing: false,
         };
     }
 
     _mount() {
         graph.getSelectionModel().addListener(mxEvent.CHANGE, this._refresh);
+
+        // preventDefault for Select and Colorpicker dropdown menu on mousedown
+        const save = this._save = (e) => {
+            e.stopPropagation();
+            if (document.activeElement === graph.cellEditor.textarea) {
+                this.selState = saveSelection();
+            }
+        };
+        (this.selectDropdown = this.refs.fontFamily.refs.menu.refs.menu.element)
+            .addEventListener('mousedown', this._preventDefault);
+        const colorpickerDropdown = this.colorpickerDropdown = this.refs.fontColor.vdt.vNode.children[1].children.refs.menu.element;
+        colorpickerDropdown.addEventListener('mousedown', (this._saveForColor = (e) => {
+            if (e.target.tagName === 'INPUT') {
+                save(e);
+            } else {
+                e.preventDefault();
+            }
+        }));
+        (this._fontSize = this.refs.fontSize.element).addEventListener('mousedown', save);
     }
 
     _toggle() {
@@ -30,14 +74,16 @@ export default class Panel extends Intact {
 
     _refresh() {
         if (graph.isSelectionEmpty()) {
-            this.set({state: null, expandedKeys: []});
-        } else if (graph.isEditing()) {
-            console.log('isEditing');
+            this.set({state: null, expandedKeys: [], isEditing: false});
+        // } else if (graph.isEditing()) {
+            // console.log('isEditing');
         } else {
             console.log(getState());
+            const isEditing = graph.cellEditor.isContentEditing();
             this.set({
                 state: getState(),
-                expandedKeys: ['style', 'text', 'layout']
+                expandedKeys: isEditing ? ['text'] : ['style', 'text', 'layout'],
+                isEditing, 
             });
         }
     }
@@ -64,5 +110,169 @@ export default class Panel extends Intact {
         } else  {
             return 'solid';
         }
+    }
+
+    _toggleFill(c, v) {
+        if (!v) {
+            this._oldFillColor = this.refs.fillColor.get('value');
+        }
+        this._setStyle('fillColor', null, v ? this._oldFillColor || '#ffffff' : 'none');
+    }
+
+    _setFillColor(c, v) {
+        if (c.get('disabled')) return;
+        if (v === this.get('state.style.fillColor')) return;
+
+        this._setStyle('fillColor', null, v);
+    }
+
+    _setStyle(key, c, value) {
+        if (!this.get('state')) return;
+
+        graph.getModel().beginUpdate();
+        graph.setCellStyles(key, value, graph.getSelectionCells());
+        graph.getModel().endUpdate();
+        this.set(`state.style.${key}`, value);
+    }
+
+    _setStrokeStyle(c, v) {
+        const styles = {};
+
+        switch (v) {
+            case 'dashed':
+                styles.dashed = 1;
+                styles.dashPattern = null;
+                break;
+            case 'dotted':
+                styles.dashed = 1;
+                styles.dashPattern = '1 2';
+                break;
+            case 'solid':
+                styles.dashed = null;
+                styles.dashPattern = null;
+                break;
+        }
+
+        graph.getModel().beginUpdate();
+        for (let key in styles) {
+            graph.setCellStyles(key, styles[key], graph.getSelectionCells());
+        }
+        graph.getModel().endUpdate();
+    }
+
+    _setRounded(c, v) {
+        this._setStyle('rounded', null, v ? '1' : '0');
+    }
+
+    _setAlign(key, value) {
+        this._setStyle(key, null, value);
+        if (graph.cellEditor.isContentEditing()) {
+            if (key === 'align') {
+                graph.cellEditor.setAlign(value);
+            } else {
+                graph.cellEditor.resize();
+            }
+        }
+        this.set(`state.style.${key}`, value);
+    }
+
+    _toggleFontStyle(key) {
+        if (graph.cellEditor.isContentEditing()) {
+            document.execCommand(key.toLowerCase(), false, null);
+        } 
+        // else {
+            graph.getModel().beginUpdate();
+            try {
+                const cells = graph.getSelectionCells();
+                graph.toggleCellStyleFlags(mxConstants.STYLE_FONTSTYLE, mxConstants[`FONT_${key}`], cells);
+            } finally {
+                graph.getModel().endUpdate();
+            }
+            this._refresh();
+        // }
+    }
+
+    _setFontSize(size) {
+        this._setStyle('fontSize', null, size); 
+        if (this.get('isEditing')) {
+            if (this.selState) {
+                restoreSelection(this.selState);
+                this.selState = null;
+            }
+            const selection = window.getSelection();
+            const textarea = graph.cellEditor.textarea;
+            let container = selection.rangeCount > 0 ? 
+                selection.getRangeAt(0).commonAncestorContainer :
+                graph.cellEditor.textarea;
+            if (container === textarea || container.nodeType !== mxConstants.NODETYPE_ELEMENT) {
+                document.execCommand('fontSize', false, '1');
+            }
+            if (container !== textarea) {
+                container = container.parentNode;
+            }
+            if (container !== null && container.nodeType === mxConstants.NODETYPE_ELEMENT) {
+                const elts = container.getElementsByTagName('*');
+                this._updateSize(container, selection, size);
+                for (let i = 0; i < elts.length; i++) {
+                    this._updateSize(elts[i], selection, size);
+                }
+            }
+        }
+    }
+
+    _updateSize(elt, selection, fontSize) {
+        const {textarea} = graph.cellEditor;
+        if (
+            textarea != null && 
+            elt !== textarea &&
+            textarea.contains(elt) &&
+            selection.containsNode(elt, true)
+        ) {
+            if (elt.nodeName === 'FONT') {
+                elt.removeAttribute('size');
+                elt.style.fontSize = fontSize + 'px';
+            } else {
+                var css = mxUtils.getCurrentStyle(elt);
+                
+                if (css.fontSize !== fontSize + 'px') {
+                    if (mxUtils.getCurrentStyle(elt.parentNode).fontSize !== fontSize + 'px') {
+                        elt.style.fontSize = fontSize + 'px';
+                    } else {
+                        elt.style.fontSize = '';
+                    }
+                }
+            }
+        }
+    }
+
+    _setFontFamily(c, font) {
+        this._setStyle('fontFamily', null, font);
+        if (this.get('isEditing')) {
+            document.execCommand('fontname', false, font);
+        }
+    }
+
+    _setFontColor(c, color) {
+        this._setStyle('fontColor', null, color);
+        if (this.get('isEditing')) {
+            if (this.selState) {
+                restoreSelection(this.selState);
+                this.selState = null;
+            }
+            document.execCommand('forecolor', false, color);
+        }
+    }
+
+    /**
+     * preventDefault to preserve the selected text
+     */
+    _preventDefault(e) {
+        e.preventDefault();
+    }
+
+    _destroy() {
+        this.colorpickerDropdown.removeEventListener('mousedown', this._saveForColor);
+        this._fontSize.removeEventListener('mousedown', this._save);
+        this.selectDropdown.removeEventListener('mousedown', this._preventDefault);
     }
 }
