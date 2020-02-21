@@ -218,3 +218,13 @@ mxGraph.prototype.getParentByName = function(node, name, stopAt) {
 
     return node;
 };
+
+mxGraph.prototype.processElements = function(elt, fn) {
+    if (elt != null) {
+        var elts = elt.getElementsByTagName('*');
+
+        for (var i = 0; i < elts.length; i++) {
+            fn(elts[i]);
+        }
+    }
+};

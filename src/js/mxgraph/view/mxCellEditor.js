@@ -1,6 +1,6 @@
 import mx from '../mx';
 
-const {mxCellEditor, mxUtils, mxClient} = mx;
+const {mxCellEditor, mxUtils, mxClient, mxEvent} = mx;
 
 /**
  * HTML in-place editor
@@ -111,4 +111,35 @@ mxCellEditor.prototype.isTableSelected = function() {
     return this.graph.getParentByName(
         this.graph.getSelectedElement(),
         'TABLE', this.textarea) != null;
+};
+
+/**
+ * Sets the alignment of the current selected cell. This sets the
+ * alignment in the cell style, removes all alignment within the
+ * text and invokes the built-in alignment function.
+ * 
+ * Only the built-in function is invoked if shift is pressed or
+ * if table cells are selected and shift is not pressed.
+ */
+mxCellEditor.prototype.alignText = function(align, evt) {
+    var shiftPressed = evt != null && mxEvent.isShiftDown(evt);
+
+    if (shiftPressed || (window.getSelection != null && window.getSelection().containsNode != null)) {
+        var allSelected = true;
+
+        this.graph.processElements(this.textarea, function(node) {
+            if (shiftPressed || window.getSelection().containsNode(node, true)) {
+                node.removeAttribute('align');
+                node.style.textAlign = null;
+            } else {
+                allSelected = false;
+            }
+        });
+
+        if (allSelected) {
+            this.graph.cellEditor.setAlign(align);
+        }
+    }
+
+    document.execCommand('justify' + align.toLowerCase(), false, null);
 };

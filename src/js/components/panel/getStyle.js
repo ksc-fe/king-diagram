@@ -48,11 +48,11 @@ export default function getStyle(ss) {
             var underline = hasParentOrOnlyChild('U', node);
 
             var align;
-            if (!graph.cellEditor.isTableSelected()) {
-                align = graph.cellEditor.align || mxUtils.getValue(ss.style, mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
-            } else {
+            // if (!graph.cellEditor.isTableSelected()) {
+                // align = graph.cellEditor.align || mxUtils.getValue(ss.style, mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
+            // } else {
                 align = css.textAlign;
-            }
+            // }
 
             // Converts rgb(r,g,b) values
             var color = css.color.replace(

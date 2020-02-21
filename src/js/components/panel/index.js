@@ -193,15 +193,20 @@ export default class Panel extends Intact {
         this._setStyle('rounded', null, v ? 1 : 0);
     }
 
-    _setAlign(key, value) {
+    _setAlign(key, value, e) {
         if (this.get('isEditing')) {
             if (key === 'align') {
-                graph.cellEditor.setAlign(value);
+                // graph.cellEditor.setAlign(value);
+                graph.cellEditor.alignText(value, e);
             } else {
                 graph.cellEditor.resize();
             }
         } else {
             this._setStyle(key, null, value);
+            graph.updateLabelElements(graph.getSelectionCells(), elt => {
+                elt.removeAttribute('align');
+                elt.style.textAlign = null;
+            });
         }
     }
 
@@ -344,6 +349,8 @@ export default class Panel extends Intact {
             }
             document.execCommand('forecolor', false, color);
         } else {
+            if (this.get('state.style.fontColor') === color) return;
+
             graph.updateLabelElements(graph.getSelectionCells(), elt => {
                 elt.removeAttribute('color');
                 elt.style.color = null;
