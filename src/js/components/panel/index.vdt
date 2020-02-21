@@ -17,6 +17,10 @@ const strokeColor = self._getStrokeColor();
 const fontStyle = self.get('state.style.fontStyle', 0);
 const fillColor = self.get('state.style.fillColor');
 
+const showStroke = strokeColor !== undefined && strokeColor !== 'none';
+const showFill = !!self.get('state.fill') && fillColor !== 'none';
+const strokeStyle = self._getStrokeStyle();
+
 <div class={{ {'kd-panel': true, 'hide': !show} }}>
     <div class="collapse-wrapper">
         <Collapse noBorder v-model="expandedKeys">
@@ -25,25 +29,30 @@ const fillColor = self.get('state.style.fillColor');
                     !self.get('state.containsLabel') &&
                     (!self.get('state.containsImage') || self.get('state.style.shape') === 'image') 
                 }}>
-                    <Checkbox value={{ !!fillColor && fillColor !== 'none' }}
-                        ev-$change:value={{ self._toggleFill }}
+                    <Checkbox value={{ showFill }}
+                        ev-$change:value={{ self._toggleColor.bind(self, 'fillColor', '#ffffff', showFill) }}
                     >填充</Checkbox>
                     <Colorpicker value={{ fillColor || '#ffffff' }} size="small" 
-                        ev-$change:value={{ self._setFillColor }}
+                        ev-$change:value={{ self._setFillOrStrokeColor.bind(self, 'fillColor') }}
                         ref="fillColor"
-                        disabled={{ !fillColor || fillColor === 'none' }}
+                        disabled={{ !showFill }}
                     />
                 </div>
                 <div class="item">
                     <div class="c-clearfix">
-                        <Checkbox value={{ !!strokeColor }}>线</Checkbox>
+                        <Checkbox value={{ showStroke }}
+                            ev-$change:value={{ self._toggleColor.bind(self, 'strokeColor', '#000000', showStroke) }}
+                        >线</Checkbox>
                         <Colorpicker value={{ strokeColor || '#000000' }} size="small" 
-                            ev-$change:value={{ self._setStyle.bind(self, 'strokeColor') }}
+                            ev-$change:value={{ self._setFillOrStrokeColor.bind(self, 'strokeColor') }}
+                            ref="strokeColor"
+                            disabled={{ !showStroke }}
                         />
                     </div>
                     <div class="c-clearfix extra-item">
-                        <Select size="small" width="120" value={{ self._getStrokeStyle() }}
-                            ev-$change:value={{ self._setStrokeStyle }}
+                        <Select size="small" width="120" value={{ strokeStyle }}
+                            ev-$change:value={{ self._setStrokeStyle.bind(self, strokeStyle) }}
+                            disabled={{ !showStroke }}
                         >
                             <Option v-for={{ ['solid', 'dashed', 'dotted'] }}
                                 value={{ value }}
@@ -60,6 +69,7 @@ const fillColor = self.get('state.style.fillColor');
                             min={{ 1 }}
                             suffix="pt"
                             ev-$change:value={{ self._setStyle.bind(self, 'strokeWidth') }}
+                            disabled={{ !showStroke }}
                         />
                     </div>
                 </div>

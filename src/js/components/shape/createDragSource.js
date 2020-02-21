@@ -41,11 +41,18 @@ export function createDragSource(elt, dropHandler, preview, cells, bounds) {
     };
 
     // Stops dragging if cancel is pressed
-	graph.addListener(mxEvent.ESCAPE, function(sender, evt) {
+    const cancel = function(sender, evt) {
 		if (dragSource.isActive()) {
 			dragSource.reset();
 		}
-	});
+	};
+	graph.addListener(mxEvent.ESCAPE, cancel);
+
+    dragSource.destroy = () => {
+        mxEvent.release(elt);
+        mxEvent.removeAllListeners(elt);
+        graph.removeListener(cancel);
+    };
 
     return dragSource;
 }

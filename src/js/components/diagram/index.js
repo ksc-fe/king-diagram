@@ -13,4 +13,8 @@ export default class Diagram extends Intact {
     _mount() {
         graph.init(this.element);
     }
+    
+    _destroy() {
+        graph.destroy();
+    }
 }

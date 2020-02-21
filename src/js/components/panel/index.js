@@ -112,22 +112,25 @@ export default class Panel extends Intact {
         }
     }
 
-    _toggleFill(c, v) {
+    _toggleColor(key, defaultColor, originValue, c, v) {
+        if (v === originValue) return;
+
         if (!v) {
-            this._oldFillColor = this.refs.fillColor.get('value');
+            this[`_old${key}`]= this.refs[key].get('value');
         }
-        this._setStyle('fillColor', null, v ? this._oldFillColor || '#ffffff' : 'none');
+        this._setStyle(key, null, v ? this[`_old${key}`] || defaultColor  : 'none');
     }
 
-    _setFillColor(c, v) {
+    _setFillOrStrokeColor(key, c, v) {
         if (c.get('disabled')) return;
-        if (v === this.get('state.style.fillColor')) return;
+        if (v === this.get(`state.style.${key}`)) return;
 
-        this._setStyle('fillColor', null, v);
+        this._setStyle(key, null, v);
     }
 
     _setStyle(key, c, value) {
         if (!this.get('state')) return;
+        if (this.get(`state.style.${key}`) === value) return;
 
         graph.getModel().beginUpdate();
         graph.setCellStyles(key, value, graph.getSelectionCells());
@@ -135,7 +138,9 @@ export default class Panel extends Intact {
         this.set(`state.style.${key}`, value);
     }
 
-    _setStrokeStyle(c, v) {
+    _setStrokeStyle(originValue, c, v) {
+        if (originValue === v) return;
+
         const styles = {};
 
         switch (v) {
@@ -161,7 +166,7 @@ export default class Panel extends Intact {
     }
 
     _setRounded(c, v) {
-        this._setStyle('rounded', null, v ? '1' : '0');
+        this._setStyle('rounded', null, v ? 1 : 0);
     }
 
     _setAlign(key, value) {
@@ -173,7 +178,6 @@ export default class Panel extends Intact {
                 graph.cellEditor.resize();
             }
         }
-        this.set(`state.style.${key}`, value);
     }
 
     _toggleFontStyle(key) {
@@ -184,7 +188,40 @@ export default class Panel extends Intact {
             graph.getModel().beginUpdate();
             try {
                 const cells = graph.getSelectionCells();
-                graph.toggleCellStyleFlags(mxConstants.STYLE_FONTSTYLE, mxConstants[`FONT_${key}`], cells);
+                const style = mxConstants[`FONT_${key}`];
+                graph.toggleCellStyleFlags(mxConstants.STYLE_FONTSTYLE, style, cells);
+                // Removes bold and italic tags and CSS styles inside labels
+                if ((style & mxConstants.FONT_BOLD) == mxConstants.FONT_BOLD) {
+                    graph.updateLabelElements(graph.getSelectionCells(), function(elt) {
+                        elt.style.fontWeight = null;
+
+                        if (elt.nodeName == 'B') {
+                            graph.replaceElement(elt);
+                        }
+                    });
+                } else if ((style & mxConstants.FONT_ITALIC) == mxConstants.FONT_ITALIC) {
+                    graph.updateLabelElements(graph.getSelectionCells(), function(elt) {
+                        elt.style.fontStyle = null;
+
+                        if (elt.nodeName == 'I') {
+                            graph.replaceElement(elt);
+                        }
+                    });
+                } else if ((style & mxConstants.FONT_UNDERLINE) == mxConstants.FONT_UNDERLINE) {
+                    graph.updateLabelElements(graph.getSelectionCells(), function(elt) {
+                        elt.style.textDecoration = null;
+
+                        if (elt.nodeName == 'U') {
+                            graph.replaceElement(elt);
+                        }
+                    });
+                }
+					
+                cells.forEach(cell => {
+                    if (graph.model.getChildCount(cell) === 0) {
+                        graph.autoSizeCell(cell, false);
+                    }
+                });
             } finally {
                 graph.getModel().endUpdate();
             }
@@ -271,6 +308,7 @@ export default class Panel extends Intact {
     }
 
     _destroy() {
+        graph.getSelectionModel().removeListener(this._refresh);
         this.colorpickerDropdown.removeEventListener('mousedown', this._saveForColor);
         this._fontSize.removeEventListener('mousedown', this._save);
         this.selectDropdown.removeEventListener('mousedown', this._preventDefault);

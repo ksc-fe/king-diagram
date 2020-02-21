@@ -96,4 +96,14 @@ export default class Shape extends Intact {
 
         this.ds = createDragSource(this.element, dropHandler, preview, cells, bounds);
     }
+
+    _destroy() {
+        tempGraph.destroy();
+        const {basic} = this.get();
+        if (!basic) {
+            this.refs.preview.innerHTML = '';
+        }
+        this.refs.container.innerHTML = '';
+        this.ds.destroy();
+    }
 }
