@@ -11,14 +11,14 @@ import mx from '../../mxgraph';
 
 const {mxConstants} = mx;
 const {show, state, isEditing} = self.get();
-const textAlign = self.get('state.style.align');
+const textAlign = isEditing ? self.get('cssStyle.align') : self.get('state.style.align');
 const verticalAlign = self.get('state.style.verticalAlign');
 const strokeColor = self._getStrokeColor();
 const fontStyle = self.get('state.style.fontStyle', 0);
 const fillColor = self.get('state.style.fillColor');
 
 const showStroke = strokeColor !== undefined && strokeColor !== 'none';
-const showFill = !!self.get('state.fill') && fillColor !== 'none';
+const showFill = !!self.get('state.fill') && fillColor !== undefined && fillColor !== 'none';
 const strokeStyle = self._getStrokeStyle();
 
 <div class={{ {'kd-panel': true, 'hide': !show} }}>
@@ -80,10 +80,15 @@ const strokeStyle = self._getStrokeStyle();
                 </div>
             </CollapseItem>
             <CollapseItem title="文本" disabled={{ !state }} value="text">
-                <Select fluid size="small" value={{ self.get('state.style.fontFamily') }}
+                <Select fluid size="small" 
+                    value={{ !isEditing ? 
+                        self.get('state.style.fontFamily') :
+                        self.get('cssStyle.fontFamily')
+                    }}
                     ev-$change:value={{ self._setFontFamily }}
                     ev-mousedown={{ self._preventDefault }}
                     ref="fontFamily"
+                    allowUnmatch
                 >
                     <Option value="Helvetica">Helvetica</Option>
                     <Option value="Microsoft Yahei">Microsoft Yahei</Option>
@@ -92,7 +97,11 @@ const strokeStyle = self._getStrokeStyle();
                 <div class="row">
                     <Button type="none" icon
                         v-for={{ ['BOLD', 'ITALIC', 'UNDERLINE'] }}
-                        class={{ {active: (fontStyle & mxConstants[`FONT_${value}`]) === mxConstants[`FONT_${value}`]} }}
+                        class={{ {
+                            active: !isEditing ? 
+                                (fontStyle & mxConstants[`FONT_${value}`]) === mxConstants[`FONT_${value}`] :
+                                self.get(`cssStyle.${value.toLowerCase()}`)
+                        } }}
                         ev-click={{ self._toggleFontStyle.bind(self, value) }}
                     >
                         <KdIcon class={{ value.toLowerCase() }} size={{ value === 'UNDERLINE' ? 14 : 30 }} />
@@ -100,7 +109,7 @@ const strokeStyle = self._getStrokeStyle();
                     <div class="font-size">
                         大小
                         <Spinner vertical size="small"
-                            value={{ self.get('state.style.fontSize', 12) }}
+                            value={{ !isEditing ? self.get('state.style.fontSize', 12) : self.get('cssStyle.fontSize') }}
                             min={{ 1 }}
                             suffix="pt"
                             ev-change={{ self._setFontSize }}
@@ -126,7 +135,12 @@ const strokeStyle = self._getStrokeStyle();
                 </div>
                 <div class="row whole">
                     <div class="label">字体颜色</div>
-                    <Colorpicker value={{ self.get('state.style.fontColor', '#000000') }} size="small" 
+                    <Colorpicker 
+                        value={{ !isEditing ? 
+                            self.get('state.style.fontColor', '#000000') :
+                            self.get('cssStyle.color', '#000000')
+                        }} 
+                        size="small" 
                         ev-$change:value={{ self._setFontColor }}
                         ev-mousedown={{ self._preventDefault }}
                         ref="fontColor"

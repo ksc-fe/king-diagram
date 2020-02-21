@@ -179,3 +179,42 @@ mxGraph.prototype.replaceElement = function(elt, tagName) {
     span.innerHTML = elt.innerHTML;
     elt.parentNode.replaceChild(span, elt);
 };
+
+/**
+ * Returns the first ancestor of the current selection with the given name.
+ */
+mxGraph.prototype.getSelectedElement = function() {
+    var node = null;
+
+    if (window.getSelection) {
+        var sel = window.getSelection();
+
+        if (sel.getRangeAt && sel.rangeCount) {
+            var range = sel.getRangeAt(0);
+            node = range.commonAncestorContainer;
+        }
+    } else if (document.selection) {
+        node = document.selection.createRange().parentElement();
+    }
+
+    return node;
+};
+
+/**
+ * Returns the first ancestor of the current selection with the given name.
+ */
+mxGraph.prototype.getParentByName = function(node, name, stopAt) {
+    while (node != null) {
+        if (node.nodeName == name) {
+            return node;
+        }
+
+        if (node == stopAt) {
+            return null;
+        }
+
+        node = node.parentNode;
+    }
+
+    return node;
+};

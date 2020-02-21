@@ -103,3 +103,12 @@ mxCellEditor.prototype.isContentEditing = function() {
     
     return state != null && state.style['html'] == 1;
 };
+
+/**
+ * Returns true if all selected text is inside a table element.
+ */
+mxCellEditor.prototype.isTableSelected = function() {
+    return this.graph.getParentByName(
+        this.graph.getSelectedElement(),
+        'TABLE', this.textarea) != null;
+};

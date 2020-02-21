@@ -4,8 +4,9 @@ import './index.styl';
 import {graph} from '../../utils/graph';
 import mx from '../../mxgraph';
 import getState from './getState';
+import getStyle from './getStyle';
 
-const {mxEvent, mxConstants, mxUtils} = mx;
+const {mxEvent, mxConstants, mxUtils, mxClient} = mx;
 
 function saveSelection() {
     if (window.getSelection) {
@@ -42,6 +43,7 @@ export default class Panel extends Intact {
             // expandedKeys: [],
             expandedKeys: ['style', 'text', 'layout'],
             isEditing: false,
+            cssStyle: null,
         };
     }
 
@@ -66,6 +68,18 @@ export default class Panel extends Intact {
             }
         }));
         (this._fontSize = this.refs.fontSize.element).addEventListener('mousedown', save);
+
+        let updating = false;
+        this._updateCssHandler = () => {
+            if (updating) return;
+            updating = true;
+            setTimeout(() => {
+                const style = getStyle(this.get('state'));
+                console.log(style);
+                this.set('cssStyle', style);
+                updating = false;
+            });
+        };
     }
 
     _toggle() {
@@ -85,6 +99,16 @@ export default class Panel extends Intact {
                 expandedKeys: isEditing ? ['text'] : ['style', 'text', 'layout'],
                 isEditing, 
             });
+            // bind events to get style of selected text
+            if (isEditing) {
+                if (mxClient.IS_FF || mxClient.IS_EDGE || mxClient.IS_IE || mxClient.IS_IE11) {
+                    mxEvent.addListener(graph.cellEditor.textarea, 'DOMSubtreeModified', this._updateCssHandler);
+                }
+                ['input', 'touchend', 'mouseup', 'keyup'].forEach(item => {
+                    mxEvent.addListener(graph.cellEditor.textarea, item, this._updateCssHandler);
+                });
+                this._updateCssHandler();
+            }
         }
     }
 
@@ -170,21 +194,23 @@ export default class Panel extends Intact {
     }
 
     _setAlign(key, value) {
-        this._setStyle(key, null, value);
-        if (graph.cellEditor.isContentEditing()) {
+        if (this.get('isEditing')) {
             if (key === 'align') {
                 graph.cellEditor.setAlign(value);
             } else {
                 graph.cellEditor.resize();
             }
+        } else {
+            this._setStyle(key, null, value);
         }
     }
 
     _toggleFontStyle(key) {
+        // because user maybe only select a sub-string, we can't change the whole font style
+        // in this case we only change the style by call execCommand
         if (graph.cellEditor.isContentEditing()) {
             document.execCommand(key.toLowerCase(), false, null);
-        } 
-        // else {
+        } else {
             graph.getModel().beginUpdate();
             try {
                 const cells = graph.getSelectionCells();
@@ -226,12 +252,13 @@ export default class Panel extends Intact {
                 graph.getModel().endUpdate();
             }
             this._refresh();
-        // }
+        }
     }
 
     _setFontSize(size) {
-        this._setStyle('fontSize', null, size); 
         if (this.get('isEditing')) {
+            if (this.get('cssStyle.fontSize') === size) return;
+
             if (this.selState) {
                 restoreSelection(this.selState);
                 this.selState = null;
@@ -254,6 +281,12 @@ export default class Panel extends Intact {
                     this._updateSize(elts[i], selection, size);
                 }
             }
+        } else {
+            this._setStyle('fontSize', null, size); 
+            graph.updateLabelElements(graph.getSelectionCells(), elt => {
+                elt.style.fontSize = size + 'px';
+                elt.removeAttribute('size');
+            });
         }
     }
 
@@ -283,20 +316,39 @@ export default class Panel extends Intact {
     }
 
     _setFontFamily(c, font) {
-        this._setStyle('fontFamily', null, font);
         if (this.get('isEditing')) {
+            if (this.get('cssStyle.fontFamily') === font) return;
+
             document.execCommand('fontname', false, font);
+        } else {
+            if (this.get('state.style.fontFamily') === font) return;
+
+            this._setStyle('fontFamily', null, font);
+            graph.updateLabelElements(graph.getSelectionCells(), elt => {
+                elt.removeAttribute('face');
+                elt.style.fontFamily = null;
+                if (elt.nodeName === 'PRE') {
+                    graph.replaceElement(elt, 'div');
+                }
+            });
         }
     }
 
     _setFontColor(c, color) {
-        this._setStyle('fontColor', null, color);
         if (this.get('isEditing')) {
+            if (this.get('cssStyle.color') === color) return;
+
             if (this.selState) {
                 restoreSelection(this.selState);
                 this.selState = null;
             }
             document.execCommand('forecolor', false, color);
+        } else {
+            graph.updateLabelElements(graph.getSelectionCells(), elt => {
+                elt.removeAttribute('color');
+                elt.style.color = null;
+            });
+            this._setStyle('fontColor', null, color);
         }
     }
 
@@ -309,6 +361,14 @@ export default class Panel extends Intact {
 
     _destroy() {
         graph.getSelectionModel().removeListener(this._refresh);
+
+        if (mxClient.IS_FF || mxClient.IS_EDGE || mxClient.IS_IE || mxClient.IS_IE11) {
+            mxEvent.removeListener(graph.cellEditor.textarea, 'DOMSubtreeModified', this._updateCssHandler);
+        }
+        ['input', 'touchend', 'mouseup', 'keyup'].forEach(item => {
+            mxEvent.removeListener(graph.cellEditor.textarea, item, this._updateCssHandler);
+        });
+
         this.colorpickerDropdown.removeEventListener('mousedown', this._saveForColor);
         this._fontSize.removeEventListener('mousedown', this._save);
         this.selectDropdown.removeEventListener('mousedown', this._preventDefault);
