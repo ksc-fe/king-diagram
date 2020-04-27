@@ -50,4 +50,22 @@ export function createGraph(container) {
     return graph;
 }
 
+export function findTreeRoot(graph) {
+    let tmp = graph.getSelectionCell();
+    let roots;
+    if (!tmp || graph.getModel().getChildCount(tmp) === 0) {
+        if (graph.getModel().getEdgeCount(tmp) === 0) {
+            roots = graph.findTreeRoots(graph.getDefaultParent());
+        }
+    } else {
+        roots = graph.findTreeRoots(tmp);
+    }
+
+    if (roots && roots.length) {
+        tmp = roots[0];
+    }
+
+    return tmp;
+}
+
 export const graph = createGraph();

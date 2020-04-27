@@ -1,0 +1,25 @@
+import {Form, FormItem} from 'kpc/components/form';
+import {Spinner} from 'kpc/components/spinner';
+import {ButtonGroup, Button} from 'kpc/components/button';
+
+<t:parent>
+    <b:body>
+        <Form labelWidth="100">
+            <FormItem label="方向：">
+                <ButtonGroup checkType="radio" v-model="type">
+                    <Button value="horizontal">水平</Button>
+                    <Button value="vertical">垂直</Button>
+                </ButtonGroup>
+            </FormItem>
+            <FormItem label="层级间距：">
+                <Spinner vertical min={{ 0 }} v-model="levelDistance" suffix="px" />
+            </FormItem>
+            <FormItem label="图形间距：">
+                <Spinner vertical min={{ 0 }} v-model="nodeDistance" suffix="px" />
+            </FormItem>
+            <FormItem label="距离画布边距：">
+                <Spinner vertical min={{ 0 }} v-model="groupPadding" suffix="px" />
+            </FormItem>
+        </Form>
+    </b:body>
+</t:parent>

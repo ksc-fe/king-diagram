@@ -1,0 +1,15 @@
+import {Form, FormItem} from 'kpc/components/form';
+import {Spinner} from 'kpc/components/spinner';
+
+<t:parent>
+    <b:body>
+        <Form labelWidth="100">
+            <FormItem label="图形间隔：">
+                <Spinner vertical min={{ 0 }} v-model="spacing" suffix="px" />
+            </FormItem>
+            <FormItem label="距离画布边距：">
+                <Spinner vertical min={{ 0 }} v-model="border" suffix="px" />
+            </FormItem>
+        </Form>
+    </b:body>
+</t:parent>

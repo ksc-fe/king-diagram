@@ -1,5 +1,5 @@
 {
-  "name": "kgraph",
+  "name": "king-diagram",
   "version": "0.0.1",
   "description": "A fully client side Javascript diagramming library based on mxgraph.",
   "main": "index.js",

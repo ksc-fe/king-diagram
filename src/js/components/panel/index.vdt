@@ -3,7 +3,7 @@ import Checkbox from 'kpc/components/checkbox';
 import {Select, Option} from 'kpc/components/select';
 import Radio from 'kpc/components/radio';
 import Icon from 'kpc/components/icon';
-import Button from 'kpc/components/button';
+import Button, {ButtonGroup} from 'kpc/components/button';
 import KdIcon from '../icon';
 import Spinner from 'kpc/components/spinner';
 import Colorpicker from 'kpc/components/colorpicker';
@@ -31,6 +31,7 @@ const strokeStyle = self._getStrokeStyle();
                 }}>
                     <Checkbox value={{ showFill }}
                         ev-$change:value={{ self._toggleColor.bind(self, 'fillColor', '#ffffff', showFill) }}
+                        disabled={{ !self.get('state.fill') }}
                     >填充</Checkbox>
                     <Colorpicker value={{ fillColor || '#ffffff' }} size="small" 
                         ev-$change:value={{ self._setFillOrStrokeColor.bind(self, 'fillColor') }}
@@ -147,12 +148,20 @@ const strokeStyle = self._getStrokeStyle();
                     />
                 </div>
             </CollapseItem>
-            <CollapseItem title="布局" disabled={{ !state || isEditing }} value="layout">
-                <Radio v-model="layout" trueValue="circle">圆形</Radio><br />
-                <Radio v-model="layout" trueValue="tree">树形</Radio><br />
-                <Radio v-model="layout" trueValue="ray">放射</Radio><br />
-                <Radio v-model="layout" trueValue="vertical">垂直</Radio><br />
-                <Radio v-model="layout" trueValue="horizontal">水平</Radio><br />
+            <CollapseItem title="布局" disabled={{ !state || isEditing }} value="layout" class="layout-panel">
+                <Button 
+                    v-for={{ [
+                        {name: '圆形', value: 'circle'},
+                        {name: '树形', value: 'tree'},
+                        {name: '放射', value: 'radial'},
+                        {name: '垂直', value: 'vertical'},
+                        {name: '水平', value: 'horizontal'},
+                    ] }}
+                    fluid
+                    size="small" 
+                    disabled={{ self.get('state.vertices.length', 0) < 2 && value.value !== 'circle' }}
+                    ev-click={{ self._layoutCells.bind(self, value.value) }}
+                >{{ value.name }}</Button>
             </CollapseItem>
         </Collapse>
     </div>

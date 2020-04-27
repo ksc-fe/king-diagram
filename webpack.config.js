@@ -11,6 +11,7 @@ module.exports = {
     resolve: {
         alias: {
             kpc: 'kpc/@stylus',
+            '~': resolve('./src/js'),
         },
     },
     module: {

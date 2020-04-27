@@ -1,13 +1,14 @@
 .kd-panel
     position relative 
     border-left 1px solid $border-color
-    overflow auto
+    // overflow auto
     .collapse-wrapper
-        width 240px
+        width 255px
         transition width $transition, opacity $transition
-        overflow hidden
+        overflow auto 
+        height 100%
     .k-collapse
-        width 240px
+        min-width 240px
     .k-collapse-item
         .k-title
             padding 0 10px
@@ -67,6 +68,10 @@
             margin-top 11px
     .label
         display inline-block
+
+    .layout-panel
+        .k-btn
+            margin 4px
 
 .line-style
     margin-top 16px

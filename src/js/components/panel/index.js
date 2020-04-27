@@ -6,7 +6,7 @@ import mx from '../../mxgraph';
 import getState from './getState';
 import getStyle from './getStyle';
 
-const {mxEvent, mxConstants, mxUtils, mxClient} = mx;
+const {mxEvent, mxConstants, mxUtils, mxClient, mxCircleLayout} = mx;
 
 function saveSelection() {
     if (window.getSelection) {
@@ -59,7 +59,8 @@ export default class Panel extends Intact {
         };
         (this.selectDropdown = this.refs.fontFamily.refs.menu.refs.menu.element)
             .addEventListener('mousedown', this._preventDefault);
-        const colorpickerDropdown = this.colorpickerDropdown = this.refs.fontColor.vdt.vNode.children[1].children.refs.menu.element;
+        const colorpickerDropdown = this.colorpickerDropdown =
+            this.refs.fontColor.vdt.vNode.children[1].children.refs.menu.element;
         colorpickerDropdown.addEventListener('mousedown', (this._saveForColor = (e) => {
             if (e.target.tagName === 'INPUT') {
                 save(e);
@@ -212,7 +213,7 @@ export default class Panel extends Intact {
 
     _toggleFontStyle(key) {
         // because user maybe only select a sub-string, we can't change the whole font style
-        // in this case we only change the style by call execCommand
+        // in this case we only change its style by call execCommand
         if (graph.cellEditor.isContentEditing()) {
             document.execCommand(key.toLowerCase(), false, null);
         } else {
@@ -364,6 +365,30 @@ export default class Panel extends Intact {
      */
     _preventDefault(e) {
         e.preventDefault();
+    }
+
+
+    /**
+     * Layout
+     */
+    _layoutCells(type) {
+        switch (type) {
+            case 'horizontal':
+            case 'vertical':
+                return import('./layouts/stack').then(({default: Dialog}) => {
+                    new Dialog({type}).show();
+                });
+            case 'circle':
+                return new mxCircleLayout(graph).execute(graph.getDefaultParent());
+            case 'tree':
+                return import('./layouts/tree').then(({default: Dialog}) => {
+                    new Dialog().show();
+                });
+            case 'radial':
+                return import('./layouts/radial').then(({default: Dialog}) => {
+                    new Dialog().show();
+                });
+        }
     }
 
     _destroy() {
