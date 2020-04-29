@@ -1,7 +1,7 @@
 import mx from '../mxgraph';
 import defaultStyle from '../data/defaultStyle';
 
-const {mxGraph, mxRubberband} = mx;
+const {mxGraph, mxRubberband, mxUtils} = mx;
 
 // temp graph for create thumbnails
 export function createTempGraph(container = document.createElement('div')) {
@@ -46,6 +46,9 @@ export function createGraph(container) {
     graph.graphHandler.scaleGrid = true;
 
     new mxRubberband(graph);
+
+    graph.currentEdgeStyle = mxUtils.clone(graph.defaultEdgeStyle);
+    graph.currentVertexStyle = mxUtils.clone(graph.defaultVertexStyle);
 
     return graph;
 }
