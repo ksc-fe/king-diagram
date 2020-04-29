@@ -16,3 +16,5 @@ mxConstants.LABEL_HANDLE_FILLCOLOR = '#cee7ff';
 mxConstants.GUIDE_COLOR = '#0088cf';
 mxConstants.HIGHLIGHT_OPACITY = 30;
 mxConstants.HIGHLIGHT_SIZE = 5;
+
+mxConstants.DEFAULT_FONTSIZE = 12;

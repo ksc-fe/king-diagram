@@ -14,7 +14,7 @@ const style = {
         "shape": "connector",
         "labelBackgroundColor": "#ffffff",
         "endArrow": "classic",
-        "fontSize": 11,
+        "fontSize": 12,
         "fontFamily": "Helvetica",
         "align": "center",
         "verticalAlign": "middle",
