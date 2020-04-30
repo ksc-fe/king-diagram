@@ -1,6 +1,7 @@
 import Intact from 'intact';
 import template from './index.vdt';
 import Editor from './editor';
+import '../css/all.styl';
 
 class App extends Intact {
     @Intact.template()

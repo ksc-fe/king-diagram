@@ -2,7 +2,7 @@ import Intact from 'intact';
 import template from './index.vdt';
 import {createTempGraph, graph} from '../../utils/graph';
 import mx from '../../mxgraph';
-import '../../shapes/process';
+import '../../shapes';
 import './index.styl';
 import {createDropHandler, createPreviewShape, createDragSource} from './createDragSource';
 

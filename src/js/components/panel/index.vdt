@@ -20,6 +20,7 @@ const fillColor = self.get('state.style.fillColor');
 const showStroke = strokeColor !== undefined && strokeColor !== 'none';
 const showFill = !!self.get('state.fill') && fillColor !== undefined && fillColor !== 'none';
 const strokeStyle = self._getStrokeStyle();
+const lineShape = self._getLineShape();
 
 <div class={{ {'kd-panel': true, 'hide': !show} }}>
     <div class="collapse-wrapper">
@@ -74,11 +75,50 @@ const strokeStyle = self._getStrokeStyle();
                         />
                     </div>
                 </div>
-                <div class="item">
+                <div class="item" v-if={{ !self.get('state.edges.length') || self.get('state.vertices.length') }}>
                     <Checkbox value={{ self.get('state.style.rounded') === 1 }}
                         ev-$change:value={{ self._setRounded }}
                     >圆角</Checkbox>
                 </div>
+                <template v-else>
+                    <div class="item">
+                        <div class="c-clearfix extra-item">
+                            <Select size="small" width="120" value={{ lineShape }}
+                                ev-$change:value={{ self._setLineShape.bind(self, lineShape) }}
+                                disabled={{ !lineShape }}
+                            >
+                                <Option v-for={{ ['line', 'link', 'flexArrow', 'arrow'] }}
+                                    value={{ value }}
+                                    label={{ value }}
+                                >
+                                    <div class="iconfont kd-jiantouyangshi1"></div>
+                                </Option>
+                                <b:value params="value">
+                                    <div class={{ 'iconfont kd-' + value }}>{{ value }}</div>
+                                </b:value>
+                            </Select>
+                            <Spinner vertical size="small" 
+                                value={{ self.get('state.style.strokeWidth', 1) }}
+                                min={{ 1 }}
+                                suffix="pt"
+                                ev-$change:value={{ self._setStyle.bind(self, 'strokeWidth') }}
+                                disabled={{ !showStroke }}
+                            />
+                        </div>
+                        <div class="c-clearfix extra-item">
+                            <div class="label">起点箭头</div>
+                            <Select size="small" width="100" class="right">
+                                
+                            </Select>
+                        </div>
+                        <div class="c-clearfix extra-item">
+                            <div class="label">终点箭头</div>
+                            <Select size="small" width="100" class="right">
+
+                            </Select>
+                        </div>
+                    </div>
+                </template>
             </CollapseItem>
             <CollapseItem title="文本" disabled={{ !state }} value="text">
                 <Select fluid size="small" 

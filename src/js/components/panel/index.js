@@ -137,6 +137,35 @@ export default class Panel extends Intact {
         }
     }
 
+    _getLineShape() {
+        const state = this.get('state');
+        if (!state) return;
+
+        const shape = state.style.shape;
+        if (shape === 'connector') return 'line';
+        return shape;
+    }
+
+    _setLineShape(originValue, c, v) {
+        if (originValue === v) return;
+
+        graph.stopEditing(false);
+        
+        const styles = {
+            [mxConstants.STYLE_SHAPE]: null,
+            [mxConstants.STYLE_STARTSIZE]: null,
+            [mxConstants.STYLE_ENDSIZE]: null,
+            width: null,
+        };
+
+        if (v !== 'line') {
+            styles[mxConstants.STYLE_SHAPE] = v;
+        }
+
+        this._setStyles(styles);
+        this.set('state.style.shape', v);
+    }
+
     _toggleColor(key, defaultColor, originValue, c, v) {
         if (v === originValue) return;
 
@@ -163,6 +192,15 @@ export default class Panel extends Intact {
         this.set(`state.style.${key}`, value);
     }
 
+    _setStyles(styles) {
+        graph.getModel().beginUpdate();
+        const cells = graph.getSelectionCells();
+        for (let key in styles) {
+            graph.setCellStyles(key, styles[key], cells);
+        }
+        graph.getModel().endUpdate();
+    }
+
     _setStrokeStyle(originValue, c, v) {
         if (originValue === v) return;
 
@@ -183,11 +221,7 @@ export default class Panel extends Intact {
                 break;
         }
 
-        graph.getModel().beginUpdate();
-        for (let key in styles) {
-            graph.setCellStyles(key, styles[key], graph.getSelectionCells());
-        }
-        graph.getModel().endUpdate();
+        this._setStyles(styles);
     }
 
     _setRounded(c, v) {
