@@ -146,6 +146,67 @@ export default class Panel extends Intact {
         return shape;
     }
 
+    _getEdgeStyle() {
+        const state = this.get('state');
+        if (!state) return;
+
+        const style = state.style;
+        let edgeStyle = mxUtils.getValue(style, mxConstants.STYLE_EDGE, null);
+        if (mxUtils.getValue(style, mxConstants.STYLE_NOEDGESTYLE, null) === '1') {
+            edgeStyle = null;
+        }
+
+        if (edgeStyle === 'orthogonalEdgeStyle' && mxUtils.getValue(style, mxConstants.STYLE_CURVED, null) === '1') {
+            edgeState = 'curved';
+        } else if (edgeStyle === 'straight' || edgeStyle === 'none' || edgeStyle === null) {
+            edgeStyle = 'straight';
+        } else if (edgeStyle === 'entityRelationEdgeStyle') {
+            edgeStyle = 'entity';
+        } else if (edgeStyle === 'elbowEdgeStyle') {
+            edgeStyle = mxUtils.getValue(style, mxConstants.STYLE_ELBOW, null) === 'vertical' ?
+                'verticalElbow' : 'horizontalElbow';
+        } else if (edgeStyle === 'isometricEdgeStyle') {
+            edgeStyle = mxUtils.getValue(style, mxConstants.STYLE_ELBOW, null) === 'vertical' ?
+                'verticalIsometric' : 'horizontalIsometric';
+        } else {
+            edgeStyle = 'orthogonal';
+        }
+
+        return edgeStyle;
+    }
+
+    _setEdgeStyle(originValue, c, v) {
+        if (originValue === v) return;
+
+        const styles = {
+            [mxConstants.STYLE_EDGE]: null,
+            [mxConstants.STYLE_CURVED]: null,
+            [mxConstants.STYLE_NOEDGESTYLE]: null,
+        };
+
+        if (v === 'orthogonal') {
+            styles[mxConstants.STYLE_EDGE] = 'orthogonalEdgeStyle';
+        } else if (v === 'horizontalElbow' || v === 'verticalElbow') {
+            styles[mxConstants.STYLE_EDGE] = 'elbowEdgeStyle';
+            if (v === 'verticalElbow') {
+                styles[mxConstants.STYLE_ELBOW] = 'vertical';
+            }
+        } else if (v === 'horizontalIsometric' || v === 'verticalIsometric') {
+            styles[mxConstants.STYLE_EDGE] = 'isometricEdgeStyle';
+            if (v === 'verticalIsometric') {
+                styles[mxConstants.STYLE_ELBOW] = 'vertical';
+            }
+        } else if (v === 'curved') {
+            styles[mxConstants.STYLE_EDGE] = 'orthogonalEdgeStyle';
+            styles[mxConstants.STYLE_CURVED] = '1';
+        } else {
+            styles[mxConstants.STYLE_EDGE] = 'entityRelationEdgeStyle';
+        }
+
+        this._setStyles(styles);
+        this._refresh();
+    }
+
     _setLineShape(originValue, c, v) {
         if (originValue === v) return;
 

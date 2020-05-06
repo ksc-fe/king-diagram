@@ -80,8 +80,6 @@ export default class Shape extends Intact {
             const bounds = graph.getGraphBounds();
             previewNode.style.width = `${bounds.width + 2 * padding}px`;
             previewNode.style.height = `${bounds.height + 2 * padding}px`;
-            // previewNode.style.width = `${bounds.width + bounds.x}px`;
-            // previewNode.style.height = `${bounds.height + bounds.y}px`;
             this.refs.preview.appendChild(previewNode);
         }
         graph.view.setTranslate(0, 0);

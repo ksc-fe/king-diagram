@@ -21,6 +21,7 @@ const showStroke = strokeColor !== undefined && strokeColor !== 'none';
 const showFill = !!self.get('state.fill') && fillColor !== undefined && fillColor !== 'none';
 const strokeStyle = self._getStrokeStyle();
 const lineShape = self._getLineShape();
+const edgeStyle = self._getEdgeStyle();
 
 <div class={{ {'kd-panel': true, 'hide': !show} }}>
     <div class="collapse-wrapper">
@@ -97,13 +98,21 @@ const lineShape = self._getLineShape();
                                     <div class={{ 'iconfont kd-' + value }}>{{ value }}</div>
                                 </b:value>
                             </Select>
-                            <Spinner vertical size="small" 
-                                value={{ self.get('state.style.strokeWidth', 1) }}
-                                min={{ 1 }}
-                                suffix="pt"
-                                ev-$change:value={{ self._setStyle.bind(self, 'strokeWidth') }}
-                                disabled={{ !showStroke }}
-                            />
+                            <Select size="small" width="69" class="right" value={{ edgeStyle }}
+                                ev-$change:value={{ self._setEdgeStyle.bind(self, edgeStyle) }}
+                                disabled={{ !edgeStyle }}
+                            >
+                                <Option 
+                                    v-for={{ [
+                                        'straight', 'orthogonal', 'horizontalElbow', 'verticalElbow',
+                                        'horizontalIsometric', 'verticalIsometric', 'curved', 'entity',
+                                    ] }}
+                                    value={{ value }}
+                                    label={{ value }}
+                                >
+                                    <div class={{ 'edge-style-item edge-' + value }}></div>
+                                </Option>
+                            </Select>
                         </div>
                         <div class="c-clearfix extra-item">
                             <div class="label">起点箭头</div>
