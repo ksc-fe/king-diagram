@@ -46,6 +46,8 @@ const {commonShapes} = self.get();
                 previewWidth={{ value.width || 120 }}
                 previewHeight={{ value.height || 60 }}
                 value={{ value.value }}
+                edge={{ value.edge }}
+                cell={{ value.cell }}
             />
         </div>
     </div>

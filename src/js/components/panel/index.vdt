@@ -91,7 +91,7 @@ const lineShape = self._getLineShape();
                                     value={{ value }}
                                     label={{ value }}
                                 >
-                                    <div class="iconfont kd-jiantouyangshi1"></div>
+                                    <Icon class="iconfont kd-shuangshixian" />
                                 </Option>
                                 <b:value params="value">
                                     <div class={{ 'iconfont kd-' + value }}>{{ value }}</div>

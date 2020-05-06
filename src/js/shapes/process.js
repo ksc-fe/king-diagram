@@ -1,6 +1,12 @@
 import mx from '../mxgraph';
 
-const {mxRectangleShape, mxUtils, mxConstants, mxRectangle, mxCellRenderer} = mx;
+const {
+    mxRectangleShape,
+    mxUtils,
+    mxConstants,
+    mxRectangle,
+    mxCellRenderer
+} = mx;
 
 function ProcessShape() {
     mxRectangleShape.call(this);
@@ -13,8 +19,8 @@ ProcessShape.prototype.isHtmlAllowed = function() {
 ProcessShape.prototype.getLabelBounds = function(rect) {
     if (mxUtils.getValue(this.state.style, mxConstants.STYLE_HORIZONTAL, true) ==
         (this.direction == null ||
-        this.direction == mxConstants.DIRECTION_EAST ||
-        this.direction == mxConstants.DIRECTION_WEST)
+            this.direction == mxConstants.DIRECTION_EAST ||
+            this.direction == mxConstants.DIRECTION_WEST)
     ) {
         var w = rect.width;
         var h = rect.height;
@@ -27,13 +33,13 @@ ProcessShape.prototype.getLabelBounds = function(rect) {
                 mxConstants.RECTANGLE_ROUNDING_FACTOR * 100) / 100;
             inset = Math.max(inset, Math.min(w * f, h * f));
         }
-        
+
         r.x += Math.round(inset);
         r.width -= Math.round(2 * inset);
-        
+
         return r;
     }
-    
+
     return rect;
 };
 ProcessShape.prototype.paintForeground = function(c, x, y, w, h) {
@@ -44,10 +50,10 @@ ProcessShape.prototype.paintForeground = function(c, x, y, w, h) {
             mxConstants.RECTANGLE_ROUNDING_FACTOR * 100) / 100;
         inset = Math.max(inset, Math.min(w * f, h * f));
     }
-    
+
     // Crisp rendering of inner lines
     inset = Math.round(inset);
-    
+
     c.begin();
     c.moveTo(x + inset, y);
     c.lineTo(x + inset, y + h);

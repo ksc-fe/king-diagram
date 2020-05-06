@@ -2,7 +2,11 @@
 // Generic arrow
 import mx from '../mxgraph';
 
-const {mxUtils, mxCellRenderer, mxArrowConnector} = mx;
+const {
+    mxUtils,
+    mxCellRenderer,
+    mxArrowConnector
+} = mx;
 
 function LinkShape() {
     mxArrowConnector.call(this);
