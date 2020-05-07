@@ -152,12 +152,12 @@ export default class Panel extends Intact {
 
         const style = state.style;
         let edgeStyle = mxUtils.getValue(style, mxConstants.STYLE_EDGE, null);
-        if (mxUtils.getValue(style, mxConstants.STYLE_NOEDGESTYLE, null) === '1') {
+        if (mxUtils.getValue(style, mxConstants.STYLE_NOEDGESTYLE, null) === 1) {
             edgeStyle = null;
         }
 
-        if (edgeStyle === 'orthogonalEdgeStyle' && mxUtils.getValue(style, mxConstants.STYLE_CURVED, null) === '1') {
-            edgeState = 'curved';
+        if (edgeStyle === 'orthogonalEdgeStyle' && mxUtils.getValue(style, mxConstants.STYLE_CURVED, null) === 1) {
+            edgeStyle = 'curved';
         } else if (edgeStyle === 'straight' || edgeStyle === 'none' || edgeStyle === null) {
             edgeStyle = 'straight';
         } else if (edgeStyle === 'entityRelationEdgeStyle') {
@@ -188,14 +188,10 @@ export default class Panel extends Intact {
             styles[mxConstants.STYLE_EDGE] = 'orthogonalEdgeStyle';
         } else if (v === 'horizontalElbow' || v === 'verticalElbow') {
             styles[mxConstants.STYLE_EDGE] = 'elbowEdgeStyle';
-            if (v === 'verticalElbow') {
-                styles[mxConstants.STYLE_ELBOW] = 'vertical';
-            }
+            styles[mxConstants.STYLE_ELBOW] = v === 'verticalElbow' ? 'vertical' : null;
         } else if (v === 'horizontalIsometric' || v === 'verticalIsometric') {
             styles[mxConstants.STYLE_EDGE] = 'isometricEdgeStyle';
-            if (v === 'verticalIsometric') {
-                styles[mxConstants.STYLE_ELBOW] = 'vertical';
-            }
+            styles[mxConstants.STYLE_ELBOW] = v === 'verticalIsometric' ? 'vertical' : null;
         } else if (v === 'curved') {
             styles[mxConstants.STYLE_EDGE] = 'orthogonalEdgeStyle';
             styles[mxConstants.STYLE_CURVED] = '1';

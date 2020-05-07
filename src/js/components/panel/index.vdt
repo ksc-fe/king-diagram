@@ -98,9 +98,11 @@ const edgeStyle = self._getEdgeStyle();
                                     <div class={{ 'iconfont kd-' + value }}>{{ value }}</div>
                                 </b:value>
                             </Select>
-                            <Select size="small" width="69" class="right" value={{ edgeStyle }}
+                            <Select size="small" width="69" 
+                                value={{ edgeStyle }}
                                 ev-$change:value={{ self._setEdgeStyle.bind(self, edgeStyle) }}
                                 disabled={{ !edgeStyle }}
+                                class="edge-style right"
                             >
                                 <Option 
                                     v-for={{ [
@@ -112,6 +114,9 @@ const edgeStyle = self._getEdgeStyle();
                                 >
                                     <div class={{ 'edge-style-item edge-' + value }}></div>
                                 </Option>
+                                <b:value params="value">
+                                    <div class={{ 'edge-style-item edge-' + value }}></div>
+                                </b:value>
                             </Select>
                         </div>
                         <div class="c-clearfix extra-item">

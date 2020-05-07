@@ -15,3 +15,4 @@ import './umlActor';
 import './or';
 import './xor';
 import './dataStorage';
+import './isometric';
