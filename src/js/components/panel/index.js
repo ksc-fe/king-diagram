@@ -5,6 +5,7 @@ import {graph} from '../../utils/graph';
 import mx from '../../mxgraph';
 import getState from './getState';
 import getStyle from './getStyle';
+import {arrows} from './arrows';
 
 const {mxEvent, mxConstants, mxUtils, mxClient, mxCircleLayout} = mx;
 
@@ -410,6 +411,22 @@ export default class Panel extends Intact {
                 }
             }
         }
+    }
+
+    _setStartArrow(c, v) {
+        const value = arrows[v];
+        this._setStyles({
+            [mxConstants.STYLE_STARTARROW]: value[0],
+            startFill: value[1],
+        });
+    }
+
+    _setEndArrow(c, v) {
+        const value = arrows[v];
+        this._setStyles({
+            [mxConstants.STYLE_ENDARROW]: value[0],
+            endFill: value[1],
+        });
     }
 
     _setFontFamily(c, font) {

@@ -103,5 +103,17 @@
 .edge-entity
     background-image url('../../../images/kd/entity.png')
 
+.arrow-shape
+    height 100%
+    background-repeat no-repeat
+    background-position center center
+    background-size 50%
+.arrow-end
+    transform rotate(180deg)
+
+for arrow in async block blockthin blocktrans classic classicthin classictrans diamond open openasync oval ovaltrans thindiamond
+    .arrow-{arrow}
+        background-image url('../../../images/kd/' + arrow + '.png')
+
 .line-style
     margin-top 16px

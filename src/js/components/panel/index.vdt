@@ -8,6 +8,7 @@ import KdIcon from '../icon';
 import Spinner from 'kpc/components/spinner';
 import Colorpicker from 'kpc/components/colorpicker';
 import mx from '../../mxgraph';
+import {arrows} from './arrows';
 
 const {mxConstants} = mx;
 const {show, state, isEditing} = self.get();
@@ -121,14 +122,24 @@ const edgeStyle = self._getEdgeStyle();
                         </div>
                         <div class="c-clearfix extra-item">
                             <div class="label">起点箭头</div>
-                            <Select size="small" width="100" class="right">
-                                
+                            <Select size="small" width="100" class="right"
+                                ev-$change:value={{ self._setStartArrow }}
+                            >
+                                <Option v-for={{ arrows }} value={{ key }}>
+                                    <div v-if={{ key !== 'none' }} class={{ "arrow-shape arrow-" + key }}></div>
+                                    <div class="c-center">无</div>
+                                </Option>
                             </Select>
                         </div>
                         <div class="c-clearfix extra-item">
                             <div class="label">终点箭头</div>
-                            <Select size="small" width="100" class="right">
-
+                            <Select size="small" width="100" class="right"
+                                ev-$change:value={{ self._setEndArrow }}
+                            >
+                                <Option v-for={{ arrows }} value={{ key }}>
+                                    <div v-if={{ key !== 'none' }} class={{ "arrow-end arrow-shape arrow-" + key }}></div>
+                                    <div class="c-center">无</div>
+                                </Option>
                             </Select>
                         </div>
                     </div>
