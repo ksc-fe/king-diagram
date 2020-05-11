@@ -414,6 +414,7 @@ export default class Panel extends Intact {
     }
 
     _setStartArrow(c, v) {
+        if (!v) return;
         const value = arrows[v];
         this._setStyles({
             [mxConstants.STYLE_STARTARROW]: value[0],
@@ -422,6 +423,7 @@ export default class Panel extends Intact {
     }
 
     _setEndArrow(c, v) {
+        if (!v) return;
         const value = arrows[v];
         this._setStyles({
             [mxConstants.STYLE_ENDARROW]: value[0],
@@ -439,6 +441,7 @@ export default class Panel extends Intact {
             [mxConstants.STYLE_ENDARROW, 'endFill'];
         const arrow = mxUtils.getValue(style, keys[0], null);
         const fill = mxUtils.getValue(style, keys[1], 1);
+        const arrows = this._getArrows();
 
         for (let key in arrows) {
             const [_arrow, _fill] = arrows[key];
@@ -446,6 +449,18 @@ export default class Panel extends Intact {
                 return key;
             }
         }
+
+        return 'none';
+    }
+
+    _getArrows() {
+        const shape = this.get('state.style.shape');
+        let _arrows = arrows;
+        if (shape !== 'connector' && shape !== 'filledEdge') {
+            _arrows = {none: arrows.none, blocktrans: arrows.blocktrans};
+        }
+
+        return _arrows;
     }
 
     _setFontFamily(c, font) {

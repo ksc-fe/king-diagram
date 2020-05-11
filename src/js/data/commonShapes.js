@@ -142,13 +142,13 @@ const shapes = [
         edge: true,
     },
     {
-        stylesheet: 'shape=flexArrow;endArrow=classic;startArrow=classic;html=1;',
+        stylesheet: 'shape=flexArrow;endArrow=block;startFill=0;startArrow=block;endFill=0;html=1;',
         width: 50,
         height: 50,
         edge: true,
     },
     {
-        stylesheet: 'shape=flexArrow;endArrow=classic;html=1;',
+        stylesheet: 'shape=flexArrow;endArrow=block;endFill=0;html=1;',
         width: 50,
         height: 50,
         edge: true,

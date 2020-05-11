@@ -8,7 +8,6 @@ import KdIcon from '../icon';
 import Spinner from 'kpc/components/spinner';
 import Colorpicker from 'kpc/components/colorpicker';
 import mx from '../../mxgraph';
-import {arrows} from './arrows';
 
 const {mxConstants} = mx;
 const {show, state, isEditing} = self.get();
@@ -36,9 +35,10 @@ const ArrowShape = ({isStart, arrow}) => {
     </template>
 };
 const ArrowComponent = ({isStart}) => {
+    const arrows = self._getArrows();
     return <div class="c-clearfix extra-item">
         <div class="label">{{ isStart ? '起点' : '终点' }}箭头</div>
-        <Select size="small" width="100"
+        <Select size="small" width="69"
             ev-$change:value={{ isStart ? self._setStartArrow : self._setEndArrow }}
             value={{ self._getArrow(isStart) }}
             class="arrow-select right"
