@@ -24,6 +24,35 @@ const strokeStyle = self._getStrokeStyle();
 const lineShape = self._getLineShape();
 const edgeStyle = self._getEdgeStyle();
 
+const ArrowShape = ({isStart, arrow}) => {
+    const cls = {
+        'arrow-shape': true,
+        [`arrow-${arrow}`]: true,
+        'arrow-end': !isStart,
+    };
+    return <template>
+        <div v-if={{ arrow !== 'none' }} class={{ cls }}></div>
+        <div v-else class="c-center">无</div>
+    </template>
+};
+const ArrowComponent = ({isStart}) => {
+    return <div class="c-clearfix extra-item">
+        <div class="label">{{ isStart ? '起点' : '终点' }}箭头</div>
+        <Select size="small" width="100"
+            ev-$change:value={{ isStart ? self._setStartArrow : self._setEndArrow }}
+            value={{ self._getArrow(isStart) }}
+            class="arrow-select right"
+        >
+            <Option v-for={{ arrows }} value={{ key }}>
+                <ArrowShape isStart={{ isStart }} arrow={{ key }} />
+            </Option>
+            <b:value params="key">
+                <ArrowShape isStart={{ isStart }} arrow={{ key }} />
+            </b:value>
+        </Select>
+    </div>
+};
+
 <div class={{ {'kd-panel': true, 'hide': !show} }}>
     <div class="collapse-wrapper">
         <Collapse noBorder v-model="expandedKeys">
@@ -120,28 +149,8 @@ const edgeStyle = self._getEdgeStyle();
                                 </b:value>
                             </Select>
                         </div>
-                        <div class="c-clearfix extra-item">
-                            <div class="label">起点箭头</div>
-                            <Select size="small" width="100" class="right"
-                                ev-$change:value={{ self._setStartArrow }}
-                            >
-                                <Option v-for={{ arrows }} value={{ key }}>
-                                    <div v-if={{ key !== 'none' }} class={{ "arrow-shape arrow-" + key }}></div>
-                                    <div class="c-center">无</div>
-                                </Option>
-                            </Select>
-                        </div>
-                        <div class="c-clearfix extra-item">
-                            <div class="label">终点箭头</div>
-                            <Select size="small" width="100" class="right"
-                                ev-$change:value={{ self._setEndArrow }}
-                            >
-                                <Option v-for={{ arrows }} value={{ key }}>
-                                    <div v-if={{ key !== 'none' }} class={{ "arrow-end arrow-shape arrow-" + key }}></div>
-                                    <div class="c-center">无</div>
-                                </Option>
-                            </Select>
-                        </div>
+                        <ArrowComponent isStart={{ true }} />
+                        <ArrowComponent isStart={{ false }} />
                     </div>
                 </template>
             </CollapseItem>

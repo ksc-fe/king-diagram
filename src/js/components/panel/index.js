@@ -429,6 +429,25 @@ export default class Panel extends Intact {
         });
     }
 
+    _getArrow(isStart) {
+        const state = this.get('state');
+        if (!state) return;
+
+        const {style} = state;
+        const keys = isStart ? 
+            [mxConstants.STYLE_STARTARROW, 'startFill'] : 
+            [mxConstants.STYLE_ENDARROW, 'endFill'];
+        const arrow = mxUtils.getValue(style, keys[0], null);
+        const fill = mxUtils.getValue(style, keys[1], 1);
+
+        for (let key in arrows) {
+            const [_arrow, _fill] = arrows[key];
+            if (_arrow === arrow && _fill === fill) {
+                return key;
+            }
+        }
+    }
+
     _setFontFamily(c, font) {
         if (this.get('isEditing')) {
             if (this.get('cssStyle.fontFamily') === font) return;
